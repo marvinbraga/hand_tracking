@@ -1,0 +1,53 @@
+# coding=utf-8
+"""
+Project Volume Control
+"""
+from ctypes import cast, POINTER
+
+import cv2
+from comtypes import CLSCTX_ALL
+from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
+
+from hand_tracking import FpsShowInfo, HandPointsBold, HandDetector, HandLandMarks
+from range_fingers import RangeFingers
+
+# Inicializa o OpenCV.
+cap = cv2.VideoCapture(0)
+cam_height, cam_width = 640, 480
+cap.set(3, cam_width)
+cap.set(4, cam_height)
+
+# Cria o HandDetector.
+detector = HandDetector(
+    fps=FpsShowInfo(color=(90, 90, 90)),
+    bold_points=HandPointsBold(bold_points=[
+        HandLandMarks.THUMB_TIP,
+        HandLandMarks.INDEX_FINGER_TIP
+    ])
+)
+
+# Ativa os controles de áudio.
+devices = AudioUtilities.GetSpeakers()
+interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+volume = cast(interface, POINTER(IAudioEndpointVolume))
+
+# Recupera o valores de máximo e mínimos de volume.
+vol_range = volume.GetVolumeRange()
+MIN_LENGTH, MAX_LENGTH = 15, 194
+# Ativa o comando de distância entre dedos
+volume_range_control = RangeFingers(detector, MIN_LENGTH, MAX_LENGTH, vol_range, color=(255, 0, 255))
+
+while True:
+    success, img = cap.read()
+    img = detector.find_hands(img)
+    # Se recuperou a posição dos dedos.
+    if detector.points:
+        # Recupera o volume ajustado de acordo com a distância entre dedos e seu range.
+        vol = volume_range_control.process(img).value
+        # Ajusta o volume
+        volume.SetMasterVolumeLevel(vol, None)
+    # imprime a caixa visualizadora de volume
+    img = volume_range_control.show(img, (0, 255, 0))
+
+    cv2.imshow("Image", img)
+    cv2.waitKey(1)
