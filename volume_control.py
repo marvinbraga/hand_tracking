@@ -11,11 +11,10 @@ from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 from hand_tracking import FpsShowInfo, HandPointsBold, HandDetector, HandLandMarks
 from range_fingers import RangeFingers
 
-# Inicializa o OpenCV.
-cap = cv2.VideoCapture(0)
-cam_height, cam_width = 640, 480
-cap.set(3, cam_width)
-cap.set(4, cam_height)
+# Ativa os controles de áudio.
+devices = AudioUtilities.GetSpeakers()
+interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+volume = cast(interface, POINTER(IAudioEndpointVolume))
 
 # Cria o HandDetector.
 detector = HandDetector(
@@ -26,16 +25,17 @@ detector = HandDetector(
     ])
 )
 
-# Ativa os controles de áudio.
-devices = AudioUtilities.GetSpeakers()
-interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
-volume = cast(interface, POINTER(IAudioEndpointVolume))
-
 # Recupera o valores de máximo e mínimos de volume.
 vol_range = volume.GetVolumeRange()
 MIN_LENGTH, MAX_LENGTH = 15, 194
 # Ativa o comando de distância entre dedos
 volume_range_control = RangeFingers(detector, MIN_LENGTH, MAX_LENGTH, vol_range, color=(255, 0, 255))
+
+# Inicializa o OpenCV.
+cap = cv2.VideoCapture(0)
+cam_height, cam_width = 640, 480
+cap.set(3, cam_width)
+cap.set(4, cam_height)
 
 while True:
     success, img = cap.read()
