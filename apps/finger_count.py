@@ -3,8 +3,9 @@
 Project Finger Count
 """
 import cv2 as cv
-from hand_tracking import FpsShowInfo, HandPointsBold, HandDetector, HandLandMarks
-
+from hand_tracking import HandPointsBold, HandDetector
+from apps.utils import FpsShowInfo
+from apps.hand_land_marks import HandLandMarks
 
 # Cria o HandDetector.
 detector = HandDetector(

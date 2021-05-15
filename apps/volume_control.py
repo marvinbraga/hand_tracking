@@ -8,7 +8,9 @@ import cv2 as cv
 from comtypes import CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 
-from hand_tracking import FpsShowInfo, HandPointsBold, HandDetector, HandLandMarks
+from hand_tracking import HandPointsBold, HandDetector
+from apps.utils import FpsShowInfo
+from apps.hand_land_marks import HandLandMarks
 from range_fingers import RangeFingers
 
 # Ativa os controles de áudio.

@@ -2,60 +2,12 @@
 """
 Project Hand Tracking
 """
-import time
-from enum import Enum
 
 import cv2 as cv
 import mediapipe as mp
 
-
-class HandLandMarks(Enum):
-    """ Identificação de Land Marks. """
-    WHIST = 0
-    THUMB_CMC = 1
-    THUMB_MCP = 2
-    THUMB_IP = 3
-    THUMB_TIP = 4
-    INDEX_FINGER_MPC = 5
-    INDEX_FINGER_PIP = 6
-    INDEX_FINGER_DIP = 7
-    INDEX_FINGER_TIP = 8
-    MIDDLE_FINGER_MCP = 9
-    MIDDLE_FINGER_PIP = 10
-    MIDDLE_FINGER_DIP = 11
-    MIDDLE_FINGER_TIP = 12
-    RING_FINGER_MCP = 13
-    RING_FINGER_PIP = 14
-    RING_FINGER_DIP = 15
-    RING_FINGER_TIP = 16
-    PINK_MCP = 17
-    PINK_PIP = 18
-    PINK_DIP = 19
-    PINK_TIP = 20
-
-
-class FpsShowInfo:
-    """ Classe para exibir a informação de Frames por Segundo. """
-
-    def __init__(self, position=(10, 35), color=(255, 0, 255)):
-        self._color = color
-        self._position = position
-        self._previous_time = time.time()
-        self._current_time = time.time()
-
-    def execute(self, img):
-        """
-        Método para exibir informação com OpenCv.
-        :return: self.
-        """
-        # calculando o fps.
-        self._current_time = time.time()
-        fps = 1 / (self._current_time - self._previous_time)
-        self._previous_time = self._current_time
-        # exibindo fps
-        cv.putText(img, f'FPS: {int(fps)}', self._position, cv.FONT_HERSHEY_PLAIN, 2, self._color, 3)
-
-        return self
+from apps.hand_land_marks import HandLandMarks
+from apps.utils import FpsShowInfo
 
 
 class HandPointsBold:
@@ -90,6 +42,8 @@ class HandDetector:
 
     def __init__(self, bold_points=None, fps=None, mode=False, max_hands=2, detection_con=0.5, track_con=0.5):
         self._bold_points = bold_points
+        if bold_points == '__all__':
+            self._bold_points = HandLandMarks.all()
         self._fps = fps
         self._points = []
         self.mp_hands = mp.solutions.hands
