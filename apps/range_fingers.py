@@ -1,3 +1,7 @@
+# coding=utf-8
+"""
+Range Fingers Module.
+"""
 import math
 
 import cv2 as cv

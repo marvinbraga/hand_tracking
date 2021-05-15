@@ -35,7 +35,7 @@ class HandLandMarks(Enum):
 
 
 class FpsShowInfo:
-    """ Classe para exibir a informção de Frames por Segundo. """
+    """ Classe para exibir a informação de Frames por Segundo. """
 
     def __init__(self, position=(10, 35), color=(255, 0, 255)):
         self._color = color
