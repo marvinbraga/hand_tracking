@@ -2,7 +2,7 @@
 """
 Project Finger Count
 """
-import cv2
+import cv2 as cv
 from hand_tracking import FpsShowInfo, HandPointsBold, HandDetector, HandLandMarks
 
 
@@ -24,7 +24,7 @@ detector = HandDetector(
 )
 
 # Inicializa o OpenCV.
-cap = cv2.VideoCapture(0)
+cap = cv.VideoCapture(0)
 cam_height, cam_width = 640, 480
 cap.set(3, cam_width)
 cap.set(4, cam_height)
@@ -51,6 +51,9 @@ while True:
         total_fingers = fingers.count(1)
         print(total_fingers, fingers)
 
-    cv2.imshow("Image", img)
-    cv2.waitKey(1)
+    cv.imshow("Image", img)
+    if cv.waitKey(1) & 0xFF == ord('q'):
+        break
+
+cv.destroyAllWindows()
 

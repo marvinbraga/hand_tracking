@@ -1,6 +1,6 @@
 import math
 
-import cv2
+import cv2 as cv
 import numpy
 
 
@@ -49,19 +49,19 @@ class RangeFingers:
             # círculo do meio da linha
             cx, cy = (x1 + x2) // 2, (y1 + y2) // 2
             # Criando a linha.
-            cv2.line(img, (x1, y1), (x2, y2), self._color, 3)
-            cv2.circle(img, (cx, cy), 12, self._color, cv2.FILLED)
+            cv.line(img, (x1, y1), (x2, y2), self._color, 3)
+            cv.circle(img, (cx, cy), 12, self._color, cv.FILLED)
 
             # Pinta o círculo de acordo com o tamanho.
             if self._length <= self._min_length:
-                cv2.circle(img, (cx, cy), 12, (0, 255, 0), cv2.FILLED)
+                cv.circle(img, (cx, cy), 12, (0, 255, 0), cv.FILLED)
             elif self._length >= self._max_length:
-                cv2.circle(img, (cx, cy), 12, (0, 0, 255), cv2.FILLED)
+                cv.circle(img, (cx, cy), 12, (0, 0, 255), cv.FILLED)
 
     def process(self, img, draw=True):
         """
         Calcula o tamanho e exibe
-        :param img: Imagem do cv2.
+        :param img: Imagem do cv.
         :param draw: Se é para exibir a informação sobre o percentual do tamanho.
         :return:
         """
@@ -85,7 +85,7 @@ class RangeFingers:
         Exibe o range.
         :return:
         """
-        cv2.rectangle(img, (50, 150), (85, 400), color, 3)
-        cv2.rectangle(img, (50, int(self._box_value)), (85, 400), color, cv2.FILLED)
-        cv2.putText(img, f'{int(self._box_tax)}%', (50, 425), cv2.FONT_HERSHEY_COMPLEX, 0.75, color, 3)
+        cv.rectangle(img, (50, 150), (85, 400), color, 3)
+        cv.rectangle(img, (50, int(self._box_value)), (85, 400), color, cv.FILLED)
+        cv.putText(img, f'{int(self._box_tax)}%', (50, 425), cv.FONT_HERSHEY_COMPLEX, 0.75, color, 3)
         return img

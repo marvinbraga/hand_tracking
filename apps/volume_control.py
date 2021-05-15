@@ -4,7 +4,7 @@ Project Volume Control
 """
 from ctypes import cast, POINTER
 
-import cv2
+import cv2 as cv
 from comtypes import CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 
@@ -32,7 +32,7 @@ MIN_LENGTH, MAX_LENGTH = 15, 194
 volume_range_control = RangeFingers(detector, MIN_LENGTH, MAX_LENGTH, vol_range, color=(255, 0, 255))
 
 # Inicializa o OpenCV.
-cap = cv2.VideoCapture(0)
+cap = cv.VideoCapture(0)
 cam_height, cam_width = 640, 480
 cap.set(3, cam_width)
 cap.set(4, cam_height)
@@ -49,5 +49,8 @@ while True:
     # imprime a caixa visualizadora de volume
     img = volume_range_control.show(img, (0, 255, 0))
 
-    cv2.imshow("Image", img)
-    cv2.waitKey(1)
+    cv.imshow("Image", img)
+    if cv.waitKey(1) & 0xFF == ord('q'):
+        break
+
+cv.destroyAllWindows()

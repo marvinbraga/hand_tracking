@@ -5,7 +5,7 @@ Project Hand Tracking
 import time
 from enum import Enum
 
-import cv2
+import cv2 as cv
 import mediapipe as mp
 
 
@@ -53,7 +53,7 @@ class FpsShowInfo:
         fps = 1 / (self._current_time - self._previous_time)
         self._previous_time = self._current_time
         # exibindo fps
-        cv2.putText(img, f'FPS: {int(fps)}', self._position, cv2.FONT_HERSHEY_PLAIN, 2, self._color, 3)
+        cv.putText(img, f'FPS: {int(fps)}', self._position, cv.FONT_HERSHEY_PLAIN, 2, self._color, 3)
 
         return self
 
@@ -81,7 +81,7 @@ class HandPointsBold:
             center_x, center_y = int(land_mark.x * width), int(land_mark.y * height)
             if HandLandMarks(nr_id) in self._bold_points:
                 if self._draw:
-                    cv2.circle(image, (center_x, center_y), self._size, self._color, cv2.FILLED)
+                    cv.circle(image, (center_x, center_y), self._size, self._color, cv.FILLED)
                     self._points.append((nr_id, center_x, center_y))
 
 
@@ -106,7 +106,7 @@ class HandDetector:
         Método para procurar as mãos.
         :return: None
         """
-        img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        img_rgb = cv.cvtColor(img, cv.COLOR_BGR2RGB)
         results = self.hands.process(img_rgb)
         self._fps.execute(img)
 
@@ -125,7 +125,7 @@ class HandDetector:
 
 def main():
     """ Método de teste. """
-    cap = cv2.VideoCapture(0)
+    cap = cv.VideoCapture(0)
     detector = HandDetector(
         fps=FpsShowInfo(),
         bold_points=HandPointsBold(bold_points=[
@@ -140,8 +140,11 @@ def main():
         success, img = cap.read()
         img = detector.find_hands(img)
         print(detector.points)
-        cv2.imshow("Image", img)
-        cv2.waitKey(1)
+        cv.imshow("Image", img)
+        if cv.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    cv.destroyAllWindows()
 
 
 if __name__ == '__main__':
