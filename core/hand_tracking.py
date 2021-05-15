@@ -6,8 +6,7 @@ Project Hand Tracking
 import cv2 as cv
 import mediapipe as mp
 
-from apps.hand_land_marks import HandLandMarks
-from apps.utils import FpsShowInfo
+from core.hand_land_marks import HandLandMarks
 
 
 class HandPointsBold:
@@ -18,6 +17,8 @@ class HandPointsBold:
         self._size = size
         self._draw = draw
         self._bold_points = bold_points
+        if bold_points == '__all__':
+            self._bold_points = HandLandMarks.all()
         self._points = []
 
     @property
@@ -42,8 +43,6 @@ class HandDetector:
 
     def __init__(self, bold_points=None, fps=None, mode=False, max_hands=2, detection_con=0.5, track_con=0.5):
         self._bold_points = bold_points
-        if bold_points == '__all__':
-            self._bold_points = HandLandMarks.all()
         self._fps = fps
         self._points = []
         self.mp_hands = mp.solutions.hands
@@ -75,31 +74,3 @@ class HandDetector:
                     self.mp_draw.draw_landmarks(img, hand_lms, self.mp_hands.HAND_CONNECTIONS)
 
         return img
-
-
-def main():
-    """ Método de teste. """
-    cap = cv.VideoCapture(0)
-    detector = HandDetector(
-        fps=FpsShowInfo(),
-        bold_points=HandPointsBold(bold_points=[
-            HandLandMarks.THUMB_TIP,
-            HandLandMarks.INDEX_FINGER_TIP,
-            HandLandMarks.MIDDLE_FINGER_TIP,
-            HandLandMarks.RING_FINGER_TIP,
-            HandLandMarks.PINK_TIP
-        ])
-    )
-    while True:
-        success, img = cap.read()
-        img = detector.find_hands(img)
-        print(detector.points)
-        cv.imshow("Image", img)
-        if cv.waitKey(1) & 0xFF == ord('q'):
-            break
-
-    cv.destroyAllWindows()
-
-
-if __name__ == '__main__':
-    main()
