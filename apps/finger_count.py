@@ -34,7 +34,7 @@ class FingerCountMiddleware(BaseMiddleware):
 
     def _process(self, frame):
         """ Executa o processamento da contagem. """
-        self._detector.find_hands(frame)
+        frame = self._detector.find_hands(frame)
         # Se recuperou a posição dos dedos.
         landmarks = self._detector.points
         if landmarks:
@@ -53,6 +53,7 @@ class FingerCountMiddleware(BaseMiddleware):
 
             total_fingers = fingers.count(1)
             print(total_fingers, fingers)
+        return frame
 
 
 def main():
