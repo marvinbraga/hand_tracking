@@ -17,12 +17,14 @@ class OpenCvFlip(Enum):
 class OpenCvVideoCapture:
     """ Classe para trabalhar com o OpenCvVideoCapture. """
 
-    def __init__(self, middleware, flip=OpenCvFlip.VERTICAL, *args, **kwargs):
+    def __init__(self, middleware, flip=OpenCvFlip.VERTICAL, cam_height=640, cam_width=480, *args, **kwargs):
         self._flip = flip
         self._args = args
         self._kwargs = kwargs
         self._middleware = middleware
         self._cap = cv.VideoCapture(0)
+        self._cap.set(3, cam_width)
+        self._cap.set(4, cam_height)
 
     def execute(self):
         """

@@ -58,9 +58,6 @@ class FingerCountMiddleware(BaseMiddleware):
 def main():
     """ Método de teste. """
     OpenCvVideoCapture(middleware=FingerCountMiddleware()).execute()
-    # cam_height, cam_width = 640, 480
-    # cap.set(3, cam_width)
-    # cap.set(4, cam_height)
 
 
 if __name__ == '__main__':
