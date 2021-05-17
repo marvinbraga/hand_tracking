@@ -49,10 +49,10 @@ class FaceMeshDetector:
         results = self._face_mesh.process(image_rgb)
         faces = []
         if results.multi_face_landmarks:
-            for face_landmark in results.multi_face_landmarks:
+            for face_id, face_landmark in enumerate(results.multi_face_landmarks):
                 if draw:
                     self.__draw_landmarks(frame, face_landmark)
-                faces.append(self.__get_face_points(frame, face_landmark, show_faces_points))
+                faces.append([face_id, self.__get_face_points(frame, face_landmark, show_faces_points)])
 
         if self._fps:
             self._fps.execute(frame)

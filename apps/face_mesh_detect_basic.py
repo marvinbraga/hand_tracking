@@ -13,7 +13,7 @@ class FaceMeshMiddleware(BaseMiddleware):
 
     def __init__(self, next_middleware=None):
         super().__init__(next_middleware=next_middleware)
-        self._detector = FaceMeshDetector(fps=FpsShowInfo(color=(90, 90, 90)))
+        self._detector = FaceMeshDetector(fps=FpsShowInfo(color=(90, 0, 0)), max_num_faces=3)
 
     def _process(self, frame):
         """ Faz o processamento. """
