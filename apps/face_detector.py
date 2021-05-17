@@ -13,9 +13,8 @@ from core.video_capture import OpenCvVideoCapture
 class FaceDetector:
     """ Classe básica para detecção de faces. """
 
-    def __init__(self, fps=None, max_num_faces=1, min_detection_confidence=0.5, color=(0, 255, 0)):
+    def __init__(self, fps=None, min_detection_confidence=0.5, color=(0, 255, 0)):
         self._color = color
-        self._max_num_faces = max_num_faces
         self._fps = fps
         self._min_detection_confidence = min_detection_confidence
         # Face Detection
@@ -59,6 +58,7 @@ class FaceDetector:
             cv.putText(frame, f'{int(detection.score[0] * 100)}%', (b_box[0], b_box[1] - 10),
                        cv.FONT_HERSHEY_PLAIN, 1, self._color, 1)
         else:
+            # Método padrão do MediaPipe.
             self._mp_draw.draw_detection(frame, detection)
         return frame
 
@@ -89,7 +89,7 @@ class FaceDetectorMiddleware(BaseMiddleware):
 
     def __init__(self, next_middleware=None):
         super().__init__(next_middleware=next_middleware)
-        self._detector = FaceDetector(fps=FpsShowInfo(color=(90, 90, 90)))
+        self._detector = FaceDetector(fps=FpsShowInfo(color=(0, 255, 9)))
 
     def _process(self, frame):
         """ Faz o processamento. """
