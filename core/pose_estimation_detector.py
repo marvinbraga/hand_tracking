@@ -52,7 +52,10 @@ class PoseEstimationDetector:
                     self._mp_draw.draw_landmarks(
                         image=frame, landmark_list=results.pose_landmarks, connections=self._mp_pose.POSE_CONNECTIONS,
                         landmark_drawing_spec=self._mp_draw.DrawingSpec(
-                            color=self._point_color, thickness=1, circle_radius=1))
+                            color=self._point_color, thickness=1, circle_radius=1),
+                        connection_drawing_spec=self._mp_draw.DrawingSpec(
+                            color=self._color, thickness=2, circle_radius=2)
+                    )
                 poses.append([pose_id, self._get_pose_points(frame, landmark, draw)])
 
         if self._fps:
