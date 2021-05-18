@@ -44,14 +44,15 @@ class OpenCvVideoCapture:
         Método para executa o OpenCvVideoCapture
         :return:
         """
-        while True:
-            ret, img = self._cap.read()
-            img = cv.flip(img, self._flip.value[0])
+        while self._cap.isOpened():
+            ret, frame = self._cap.read()
+            frame = cv.flip(frame, self._flip.value[0])
             if self._middleware:
-                self._middleware.process(img)
+                self._middleware.process(frame)
 
-            cv.imshow(self._win_name, img)
+            cv.imshow(self._win_name, frame)
             if cv.waitKey(1) & 0xFF == ord('q'):
                 break
 
+        self._cap.release()
         cv.destroyAllWindows()
