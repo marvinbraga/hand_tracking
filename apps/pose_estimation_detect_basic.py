@@ -10,7 +10,7 @@ import numpy as np
 from core.abstract_middleware import BaseMiddleware
 from core.pose_estimation_detector import PoseEstimationDetector, PoseDetectorLandmark
 from core.utils import FpsShowInfo
-from core.video_capture import OpenCvVideoCapture, OpenCvScreen
+from core.video_capture import OpenCvVideoCapture
 
 
 class MovStage(Enum):
@@ -25,9 +25,8 @@ class PoseEstimationDetectorMiddleware(BaseMiddleware):
 
     _FONT = cv.FONT_HERSHEY_SIMPLEX
 
-    def __init__(self, screen, next_middleware=None):
+    def __init__(self, next_middleware=None):
         super().__init__(next_middleware=next_middleware)
-        self._screen = screen
         self._detector = PoseEstimationDetector(fps=FpsShowInfo(color=(0, 255, 0)))
         self._mov_stage = MovStage.NONE
         self._counter = 0
@@ -86,16 +85,15 @@ class PoseEstimationDetectorMiddleware(BaseMiddleware):
                     draw
                 )
                 frame = self._show_data(frame, angle)
-            except Exception:
-                pass
+            except Exception as e:
+                print(e)
 
         return frame
 
 
 def main():
     """ Método de teste. """
-    screen = OpenCvScreen()
-    OpenCvVideoCapture(middleware=PoseEstimationDetectorMiddleware(screen=screen), screen=screen).execute()
+    OpenCvVideoCapture(middleware=PoseEstimationDetectorMiddleware()).execute()
 
 
 if __name__ == '__main__':
