@@ -20,7 +20,7 @@ class MovStage(Enum):
     UP = 2, "Cima"
 
 
-class PoseEstimationDetectorMiddleware(BaseMiddleware):
+class PoseCountAngleMiddleware(BaseMiddleware):
     """ Classe middleware para Face Detection. """
 
     _FONT = cv.FONT_HERSHEY_SIMPLEX
@@ -93,7 +93,7 @@ class PoseEstimationDetectorMiddleware(BaseMiddleware):
 
 def main():
     """ Método de teste. """
-    OpenCvVideoCapture(middleware=PoseEstimationDetectorMiddleware()).execute()
+    OpenCvVideoCapture(middleware=PoseCountAngleMiddleware()).execute()
 
 
 if __name__ == '__main__':
