@@ -57,10 +57,10 @@ class PoseCountAngleMiddleware(BaseMiddleware):
             self._mov_stage = MovStage.UP
             self._counter += 1
 
-        cv.rectangle(frame, (0, 0), (225, 73), (245, 117, 16), -1)
-        cv.putText(frame, 'NUM', (10, 15), self._FONT, 0.5, (0, 0, 0), 1, cv.LINE_AA)
+        cv.rectangle(frame, (0, 0), (225, 73), (90, 0, 0), -1)
+        cv.putText(frame, 'NUM', (10, 15), self._FONT, 0.5, (255, 255, 255), 1, cv.LINE_AA)
         cv.putText(frame, str(self._counter), (10, 65), self._FONT, 1.5, (255, 255, 255), 2, cv.LINE_AA)
-        cv.putText(frame, 'ESTAGIO', (95, 15), self._FONT, 0.5, (0, 0, 0), 1, cv.LINE_AA)
+        cv.putText(frame, 'ESTAGIO', (95, 15), self._FONT, 0.5, (255, 255, 255), 1, cv.LINE_AA)
         cv.putText(frame, self._mov_stage.value[1], (90, 65), self._FONT, 1.5, (255, 255, 255), 2, cv.LINE_AA)
 
         return frame
