@@ -29,3 +29,38 @@ class FpsShowInfo:
         cv.putText(img, f'FPS: {int(fps)}', self._position, cv.FONT_HERSHEY_PLAIN, 2, self._color, 3)
 
         return self
+
+
+class Point:
+    """ Classe para guardar posição de tela. """
+
+    def __init__(self, x, y):
+        self.y = y
+        self.x = x
+
+    def __str__(self):
+        return f'Point(x={self.x}, y={self.y})'
+
+    def __repr__(self):
+        return f'<Point, x: {self.x}, y: {self.y}>'
+
+    def __add__(self, other):
+        """ Utilizando a adição entre objetos deste tipo. """
+        return Point(self.x + other.x, self.y + other.y)
+
+    def __sub__(self, other):
+        """ Utilizando a subtração para objetos deste tipo. """
+        return Point(self.x - other.x, self.y - other.y)
+
+    def __iadd__(self, other):
+        """ Utilizando a adição in-place. """
+        self.x += other.x
+        self.y += other.y
+        return self
+
+    def __cmp__(self, other):
+        return self.x == other.x and self.y == other.y
+
+    def as_tuple(self):
+        """ Retorna o valor em tuplas. """
+        return self.x, self.y

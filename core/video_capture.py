@@ -8,47 +8,14 @@ from enum import Enum
 import cv2 as cv
 import numpy as np
 
+from core.utils import Point
+
 
 class OpenCvFlip(Enum):
     """ Configurações para flip de imagem. """
     HORIZONTAL = 0
     VERTICAL = 1
     BOTH = -1
-    
-    
-class Point:
-    """ Classe para guardar posição de tela. """
-    
-    def __init__(self, x, y):
-        self.y = y
-        self.x = x
-
-    def __str__(self):
-        return f'Point(x={self.x}, y={self.y})'
-
-    def __repr__(self):
-        return f'<Point, x: {self.x}, y: {self.y}>'
-
-    def __add__(self, other):
-        """ Utilizando a adição entre objetos deste tipo. """
-        return Point(self.x + other.x, self.y + other.y)
-
-    def __sub__(self, other):
-        """ Utilizando a subtração para objetos deste tipo. """
-        return Point(self.x - other.x, self.y - other.y)
-
-    def __iadd__(self, other):
-        """ Utilizando a adição in-place. """
-        self.x += other.x
-        self.y += other.y
-        return self
-
-    def __cmp__(self, other):
-        return self.x == other.x and self.y == other.y
-
-    def as_tuple(self):
-        """ Retorna o valor em tuplas. """
-        return self.x, self.y
 
 
 class NamedBox:
