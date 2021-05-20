@@ -2,10 +2,12 @@
 """
 Face Detect Basic Module.
 """
+import cv2 as cv
+
 from core.abstract_middleware import BaseMiddleware
 from core.face_detector import FaceDetector
 from core.utils import FpsShowInfo
-from core.video_capture import OpenCvVideoCapture
+from core.video_capture import OpenCvVideoCapture, NamedBox
 
 
 class FaceDetectorMiddleware(BaseMiddleware):
@@ -18,7 +20,12 @@ class FaceDetectorMiddleware(BaseMiddleware):
     def _process(self, frame):
         """ Faz o processamento. """
         faces, frame = self._detector.find_faces(frame, show_face_info=True)
-        print(faces)
+        # print(faces)
+        if faces:
+            for face in faces:
+                x, y, _, _ = face[1]
+                NamedBox(frame, 'MARCUS VINICIUS BRAGA', (x, y)).show()
+
         return frame
 
 

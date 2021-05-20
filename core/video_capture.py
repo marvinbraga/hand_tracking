@@ -6,6 +6,7 @@ import os
 from enum import Enum
 
 import cv2 as cv
+import numpy as np
 
 
 class OpenCvFlip(Enum):
@@ -13,6 +14,85 @@ class OpenCvFlip(Enum):
     HORIZONTAL = 0
     VERTICAL = 1
     BOTH = -1
+    
+    
+class Point:
+    """ Classe para guardar posição de tela. """
+    
+    def __init__(self, x, y):
+        self.y = y
+        self.x = x
+
+    def __str__(self):
+        return f'Point(x={self.x}, y={self.y})'
+
+    def __repr__(self):
+        return f'<Point, x: {self.x}, y: {self.y}>'
+
+    def __add__(self, other):
+        """ Utilizando a adição entre objetos deste tipo. """
+        return Point(self.x + other.x, self.y + other.y)
+
+    def __sub__(self, other):
+        """ Utilizando a subtração para objetos deste tipo. """
+        return Point(self.x - other.x, self.y - other.y)
+
+    def __iadd__(self, other):
+        """ Utilizando a adição in-place. """
+        self.x += other.x
+        self.y += other.y
+        return self
+
+    def __cmp__(self, other):
+        return self.x == other.x and self.y == other.y
+
+    def as_tuple(self):
+        """ Retorna o valor em tuplas. """
+        return self.x, self.y
+
+
+class NamedBox:
+    """ Classe para apresentar uma caixa de texto para nomes. """
+
+    def __init__(self, frame, name, position, text_color=(255, 255, 255), line_color=(255, 255, 255),
+                 back_color=(90, 0, 0)):
+        self._position = Point(*position)
+        self._frame = frame
+        self._back_color = back_color
+        self._line_color = line_color
+        self._text_color = text_color
+        self._name = name
+        if not name:
+            self._name = 'DESCONHECIDO'
+            self._back_color = (0, 0, 125)
+
+    def _paint_box(self, start, end, text):
+        """ Pinta a caixa de texto e o texto. """
+        cv.rectangle(self._frame, start.as_tuple(), end.as_tuple(), self._back_color, -1)
+        cv.rectangle(self._frame, start.as_tuple(), end.as_tuple(), self._line_color, 2)
+        cv.putText(self._frame, self._name, text.as_tuple(), cv.FONT_HERSHEY_DUPLEX, 0.5, self._text_color, 1,
+                   cv.LINE_AA)
+        return self
+
+    def _paint_indicator_box(self, start, end):
+        """ Pinta o indicador da caixa. """
+        point_1 = Point(start.x + 10, end.y)
+        point_2 = Point(point_1.x + 10, point_1.y)
+        point_3 = Point(self._position.x + 50, self._position.y - 70)
+        triangle = np.array([point_1.as_tuple(), point_2.as_tuple(), point_3.as_tuple()])
+        cv.drawContours(self._frame, [triangle], 0, self._back_color, -1)
+        cv.drawContours(self._frame, [triangle], 0, self._line_color, 2)
+        return self
+
+    def show(self):
+        """ Método para exibir a caixa de texto. """
+        text_size = cv.getTextSize(self._name, cv.FONT_HERSHEY_DUPLEX, 0.5, 1)
+        text_width, text_height = text_size[0]
+        start_point = Point(self._position.x - 20, self._position.y - 150)
+        end_point = Point(start_point.x + text_width + 18, start_point.y + text_height + 20)
+        text_point = Point(start_point.x + 10, start_point.y + 22)
+        self._paint_box(start_point, end_point, text_point)._paint_indicator_box(start_point, end_point)
+        return self
 
 
 class OpenCvScreen:

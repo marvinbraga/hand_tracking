@@ -43,20 +43,20 @@ class PoseCountAngleMiddleware(BaseMiddleware):
         if angle > 180.0:
             angle = 360 - angle
 
-        if draw:
-            cv.putText(frame, str(angle), tuple(b.astype(int)),
-                       self._FONT, 0.5, (255, 255, 255), 2, cv.LINE_AA)
-
-        return angle, frame
-
-    def _show_data(self, frame, angle):
-        """ Exibir os dados relacionados aos movimentos. """
         if angle > 160:
             self._mov_stage = MovStage.DOWN
         if angle < 30 and self._mov_stage == MovStage.DOWN:
             self._mov_stage = MovStage.UP
             self._counter += 1
 
+        if draw:
+            cv.putText(frame, str(angle), tuple(b.astype(int)),
+                       self._FONT, 0.5, (255, 255, 255), 2, cv.LINE_AA)
+
+        return angle, frame
+
+    def _show_data(self, frame):
+        """ Exibir os dados relacionados aos movimentos. """
         cv.rectangle(frame, (0, 0), (225, 73), (90, 0, 0), -1)
         cv.putText(frame, 'NUM', (10, 15), self._FONT, 0.5, (255, 255, 255), 1, cv.LINE_AA)
         cv.putText(frame, str(self._counter), (10, 65), self._FONT, 1.5, (255, 255, 255), 2, cv.LINE_AA)
@@ -84,7 +84,7 @@ class PoseCountAngleMiddleware(BaseMiddleware):
                     poses[PoseDetectorLandmark.LEFT_WRIST.value][1],
                     draw
                 )
-                frame = self._show_data(frame, angle)
+                frame = self._show_data(frame)
             except Exception as e:
                 print(e)
 
