@@ -10,6 +10,11 @@ pylint = "*"
 opencv-python = "*"
 mediapipe = "*"
 pycaw = "*"
+transformers = "*"
+requests = "*"
+beautifulsoup4 = "*"
+pandas = "*"
+numpy = "*"
 
 [requires]
 python_version = "3.9"

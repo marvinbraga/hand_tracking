@@ -79,6 +79,10 @@ class OpenCvScreen:
         """ Retorna a altura. """
         return self._height
 
+    def as_tuple(self):
+        """ Retorna tupla com valores. """
+        return self._width, self._height
+
 
 class OpenCvVideoCapture:
     """ Classe para trabalhar com o OpenCvVideoCapture. """
