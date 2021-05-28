@@ -35,11 +35,18 @@ class SentimentAnalysis:
 
 if __name__ == '__main__':
     analyser = SentimentAnalysis()
+    # frases = [
+    #     'I hated this, absolutely the worst',
+    #     'This is amazing, I love it. GREAT!',
+    #     'Meh, it was okay!',
+    #     "It was good but could've been better. Great"
+    # ]
     frases = [
-        'I hated this, absolutely the worst',
-        'This is amazing, I love it. GREAT!',
-        'Meh, it was okay!',
-        "It was good but could've been better. Great"
+        'Isto é muito bom! Parabéns!',
+        'Gostei, mas ainda pode melhorar.',
+        'É fraco, mas está bonzinho',
+        'Parece que não é bom',
+        'Olha, não gostei nada disto. Estou muito insatisfeito'
     ]
     for t in frases:
         print(t, analyser.calculate(t))
