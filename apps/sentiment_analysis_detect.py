@@ -48,6 +48,7 @@ if __name__ == '__main__':
         'Parece que não é bom',
         'Olha, não gostei nada disto. Estou muito insatisfeito'
     ]
+
     for t in frases:
         print(t, analyser.calculate(t))
 
