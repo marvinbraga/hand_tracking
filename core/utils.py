@@ -65,3 +65,32 @@ class Point:
     def as_tuple(self):
         """ Retorna o valor em tuplas. """
         return self.x, self.y
+
+
+class FancyDraw:
+    """ Pinta quadrado de indicação. """
+
+    def __init__(self, color=(0, 255, 0), line_length=30, thickness=3, rectangle_length=1):
+        self._color = color
+        self._rectangle_length = rectangle_length
+        self._thickness = thickness
+        self._line_length = line_length
+
+    def paint(self, frame, bounding_box):
+        """ Executa a pintura do quadrado. """
+        x, y, w, h = bounding_box
+        x1, y1 = x + w, y + h
+        cv.rectangle(frame, bounding_box, self._color, self._rectangle_length)
+        # Top Left
+        cv.line(frame, (x, y), (x + self._line_length, y), self._color, self._thickness)
+        cv.line(frame, (x, y), (x, y + self._line_length), self._color, self._thickness)
+        # Top Right
+        cv.line(frame, (x1, y), (x1 - self._line_length, y), self._color, self._thickness)
+        cv.line(frame, (x1, y), (x1, y + self._line_length), self._color, self._thickness)
+        # Bottom Left
+        cv.line(frame, (x, y1), (x + self._line_length, y1), self._color, self._thickness)
+        cv.line(frame, (x, y1), (x, y1 - self._line_length), self._color, self._thickness)
+        # Bottom Right
+        cv.line(frame, (x1, y1), (x1 - self._line_length, y1), self._color, self._thickness)
+        cv.line(frame, (x1, y1), (x1, y1 - self._line_length), self._color, self._thickness)
+        return frame

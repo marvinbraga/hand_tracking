@@ -5,6 +5,8 @@ Face Detector Module
 import cv2 as cv
 import mediapipe as mp
 
+from core.utils import FancyDraw
+
 
 class FaceDetector:
     """ Classe básica para detecção de faces. """
@@ -27,30 +29,11 @@ class FaceDetector:
                  int(b_box_detected.width * image_w), int(b_box_detected.height * image_h))
         return b_box
 
-    def _fancy_draw(self, frame, bounding_box, line_length=30, thickness=3, rectangle_length=1):
-        x, y, w, h = bounding_box
-        x1, y1 = x + w, y + h
-        cv.rectangle(frame, bounding_box, self._color, rectangle_length)
-        # Top Left
-        cv.line(frame, (x, y), (x + line_length, y), self._color, thickness)
-        cv.line(frame, (x, y), (x, y + line_length), self._color, thickness)
-        # Top Right
-        cv.line(frame, (x1, y), (x1 - line_length, y), self._color, thickness)
-        cv.line(frame, (x1, y), (x1, y + line_length), self._color, thickness)
-        # Bottom Left
-        cv.line(frame, (x, y1), (x + line_length, y1), self._color, thickness)
-        cv.line(frame, (x, y1), (x, y1 - line_length), self._color, thickness)
-        # Bottom Right
-        cv.line(frame, (x1, y1), (x1 - line_length, y1), self._color, thickness)
-        cv.line(frame, (x1, y1), (x1, y1 - line_length), self._color, thickness)
-
-        return frame
-
     def __draw_detection(self, frame, detection, show_face_info):
         """ Desenha a localização da face. """
         if show_face_info:
             b_box = self.__get_bounding_box(frame, detection)
-            self._fancy_draw(frame, b_box)
+            frame = FancyDraw(self._color).paint(frame, b_box)
             cv.putText(frame, f'{int(detection.score[0] * 100)}%', (b_box[0], b_box[1] - 10),
                        cv.FONT_HERSHEY_PLAIN, 1, self._color, 1)
         else:
