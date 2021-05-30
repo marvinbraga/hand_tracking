@@ -74,17 +74,16 @@ class FaceCaptureHaarcascade(BaseMiddleware):
     def _process(self, frame):
         """ Executa a captura da imagem. """
         if self._faces:
-            for x, y, w, h in self._faces:
-                # Salva a imagem.
-                if cv.waitKey(1) & 0xFF == 13:
-                    image = cv.resize(self._gray_image[y: y + h, x: x + w], (self._width, self._height))
-                    file_name = self._save_captured_image()
-                    cv.imwrite(file_name, image)
-                    print(file_name, 'capturada com sucesso.')
-                    self._order += 1
-                if self._order >= self._max + 1:
-                    raise LimitReached()
-                break
+            x, y, w, h = self._faces[0]
+            # Salva a imagem.
+            if cv.waitKey(1) & 0xFF == 13:
+                image = cv.resize(self._gray_image[y: y + h, x: x + w], (self._width, self._height))
+                file_name = self._save_captured_image()
+                cv.imwrite(file_name, image)
+                print(file_name, 'capturada com sucesso.')
+                self._order += 1
+            if self._order >= self._max + 1:
+                raise LimitReached()
         return frame
 
 
