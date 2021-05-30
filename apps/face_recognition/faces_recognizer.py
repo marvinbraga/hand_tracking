@@ -57,7 +57,7 @@ class FaceRecognizer(BaseMiddleware):
         for x, y, w, h in self._faces:
             image = cv.resize(self._gray_image[y: y + h, x: x + w], (self._width, self._height))
             image_id, assurance = self._recognizer.predict(image)
-            NamedBox(frame, Faces2Recognize.get_name(image_id), (x, y)).show()
+            NamedBox(frame, Faces2Recognize.get_name(image_id), (x, y + 20)).show()
             cv.putText(frame, f'{assurance}', (x, y - 10), cv.FONT_HERSHEY_PLAIN, 1, (0, 255, 0), 1)
             cv.putText(
                 frame, f'{self._recognizer_type.value[1]}', (x, y + h + 20), cv.FONT_HERSHEY_PLAIN, 1, (0, 255, 0), 1)
