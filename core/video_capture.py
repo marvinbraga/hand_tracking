@@ -13,6 +13,7 @@ from core.utils import Point, GetScreen
 
 class OpenCvFlip(Enum):
     """ Configurações para flip de imagem. """
+    NONE = 9
     HORIZONTAL = 0
     VERTICAL = 1
     BOTH = -1
@@ -108,8 +109,13 @@ class OpenCvVideoCapture:
 
     def init_capture(self):
         """ Inicializa a captura de vídeo. """
+        result = None
         if self._file_name:
-            result = GetScreen() if self._file_name == "screen" else cv.VideoCapture(os.path.normpath(self._file_name))
+            if self._file_name == "screen":
+                result = GetScreen()
+                self._flip = OpenCvFlip.NONE
+            else:
+                cv.VideoCapture(os.path.normpath(self._file_name))
         else:
             result = cv.VideoCapture(0)
         return result
@@ -121,7 +127,8 @@ class OpenCvVideoCapture:
         """
         while self._cap.isOpened():
             ret, frame = self._cap.read()
-            frame = cv.flip(frame, self._flip.value)
+            if self._flip is not OpenCvFlip.NONE:
+                frame = cv.flip(frame, self._flip.value)
             if self._middleware:
                 self._middleware.process(frame)
 

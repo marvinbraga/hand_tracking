@@ -3,29 +3,13 @@
 Módulo de treinamento.
 """
 import os
-from enum import Enum
 
 import cv2 as cv
 import numpy as np
 
 import settings
 from core.abstract_middleware import BaseMiddleware
-
-
-class RecognizerType(Enum):
-    """ Tipos de reconhecedores. """
-    EIGEN = 0, 'EigenFace'
-    FISHER = 1, 'FisherFace'
-    LBPH = 2, 'LBPHFace'
-
-    def new_recognizer(self):
-        """ Factory Method para Recognizer. """
-        result = {
-            RecognizerType.EIGEN: cv.face.EigenFaceRecognizer_create,
-            RecognizerType.FISHER: cv.face.FisherFaceRecognizer_create,
-            RecognizerType.LBPH: cv.face.LBPHFaceRecognizer_create
-        }[self]
-        return result()
+from core.utils import RecognizerType
 
 
 class FaceTraining(BaseMiddleware):
@@ -63,7 +47,11 @@ class FaceTraining(BaseMiddleware):
             print('treinando...')
         for recognizer in RecognizerType:
             # Recupera o classificador.
-            c = recognizer.new_recognizer()
+            c = recognizer.new_recognizer(**{
+                RecognizerType.EIGEN: {'num_components': 50, 'threshold': 2},
+                RecognizerType.FISHER: {'num_components': None, 'threshold': None},
+                RecognizerType.LBPH: {'threshold': None}
+            }[recognizer])
             c.train(src=self._faces, labels=self._ids)
             c.write(os.path.join(settings.BASE_DIR + '/data/training', f'{recognizer.value[1]}.yml'))
             if self._verbose:

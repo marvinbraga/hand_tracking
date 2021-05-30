@@ -7,7 +7,7 @@ import os
 import cv2 as cv
 
 from core.abstract_middleware import BaseMiddleware
-from core.utils import FancyDraw
+from core.utils import FancyDraw, HaarcascadesFiles
 from core.video_capture import OpenCvVideoCapture
 from settings import BASE_DIR
 
@@ -25,8 +25,8 @@ class FaceDetectHaarcascade(BaseMiddleware):
     def __init__(self, next_middleware=None, color=(0, 255, 0)):
         super(FaceDetectHaarcascade, self).__init__(next_middleware)
         self._color = color
-        self._classfier = self.get_cascade('haarcascade_frontalface_default.xml')
-        self._eye_classfier = self.get_cascade('haarcascade_eye.xml')
+        self._classfier = cv.CascadeClassifier(HaarcascadesFiles.get('haarcascade_frontalface_default'))
+        self._eye_classfier = cv.CascadeClassifier(HaarcascadesFiles.get('haarcascade_eye'))
 
     def _process(self, frame):
         """ Executa o processamento da captura de face. """
@@ -37,7 +37,7 @@ class FaceDetectHaarcascade(BaseMiddleware):
         for x, y, w, h in faces:
             b_box = x, y, w, h
             frame = FancyDraw(self._color).paint(frame, b_box)
-            if self._next and isinstance(self._next, FaceCaptureHaarcascade):
+            if self._next:
                 self._next.add_faces(b_box)
                 self._next.set_gray_image(gray_image)
             break

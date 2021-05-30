@@ -15,18 +15,6 @@ class BaseMiddleware(metaclass=ABCMeta):
     def __init__(self, next_middleware=None):
         self._next = next_middleware
 
-    @staticmethod
-    def get_cascade(file_name):
-        """
-        Carrega o cascade do arquivo XML do opencv.
-        :param file_name: nome do cascade
-        :return: obj
-        """
-        file = os.path.normpath(os.path.join(BASE_DIR, f'data/cascade/{file_name}'))
-        if not os.path.isfile(file):
-            raise FileNotFoundError()
-        return cv.CascadeClassifier(file)
-
     @abstractmethod
     def _process(self, frame):
         pass

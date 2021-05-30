@@ -2,11 +2,15 @@
 """
 Utils Module.
 """
+import os
 import time
 
 import cv2 as cv
+import cv2.data as cv_data
+
 import numpy as np
 from PIL import ImageGrab
+from enum import Enum
 
 
 class FpsShowInfo:
@@ -125,9 +129,36 @@ class GetScreen:
 
     def read(self):
         """ Recupera a imagem da tela """
-        print_screen = np.array(ImageGrab.grab(bbox=(self._top, self._left, self._bottom, self._right)))
-        return print_screen
+        b_box = (self._top, self._left, self._bottom, self._right)
+        print_screen = np.array(ImageGrab.grab(bbox=b_box))
+        return b_box, print_screen
 
     def release(self):
         """ Não precisa retornar nada. """
         pass
+
+
+class HaarcascadesFiles:
+    """ Classe para recupera os arquivos haarcascades instalados. """
+
+    @staticmethod
+    def get(value):
+        """ Recupera o caminho completo do arquivo de acordo com o valor informado. """
+        files = {f.split('.')[0]: os.path.join(cv_data.haarcascades, f) for f in os.listdir(cv_data.haarcascades)}
+        return files.get(value)
+
+
+class RecognizerType(Enum):
+    """ Tipos de reconhecedores. """
+    EIGEN = 0, 'EigenFace'
+    FISHER = 1, 'FisherFace'
+    LBPH = 2, 'LBPHFace'
+
+    def new_recognizer(self, *args, **kwargs):
+        """ Factory Method para Recognizer. """
+        result = {
+            RecognizerType.EIGEN: cv.face.EigenFaceRecognizer_create,
+            RecognizerType.FISHER: cv.face.FisherFaceRecognizer_create,
+            RecognizerType.LBPH: cv.face.LBPHFaceRecognizer_create
+        }[self]
+        return result(*args, **kwargs)
