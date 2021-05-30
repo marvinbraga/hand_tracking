@@ -1,6 +1,6 @@
 # coding=utf-8
 """
-Módulo de Reconhecedor LbphFaces.
+Módulo de Reconhecedor Genérico de Faces.
 """
 import os
 
@@ -27,14 +27,15 @@ class Faces2Recognize:
         return result
 
 
-class LbphFaceRecognizer(BaseMiddleware):
+class FaceRecognizer(BaseMiddleware):
     """ Reconhecedor EigenFace. """
     _width, _height = 220, 220
 
-    def __init__(self, next_middleware=None):
-        super(LbphFaceRecognizer, self).__init__(next_middleware)
-        self._recognizer_type = RecognizerType.LBPH
-        self._recognizer = self._recognizer_type.new_recognizer()
+    def __init__(self, next_middleware=None,
+                 recognizer_type=RecognizerType.LBPH, recognizer_params={'threshold': None}):
+        super(FaceRecognizer, self).__init__(next_middleware)
+        self._recognizer_type = recognizer_type
+        self._recognizer = self._recognizer_type.new_recognizer(**recognizer_params)
         self._recognizer.read(
             os.path.join(settings.BASE_DIR + '/data/training', f'{self._recognizer_type.value[1]}.yml'))
         self._faces = []
@@ -58,6 +59,8 @@ class LbphFaceRecognizer(BaseMiddleware):
             image_id, assurance = self._recognizer.predict(image)
             NamedBox(frame, Faces2Recognize.get_name(image_id), (x, y)).show()
             cv.putText(frame, f'{assurance}', (x, y - 10), cv.FONT_HERSHEY_PLAIN, 1, (0, 255, 0), 1)
+            cv.putText(
+                frame, f'{self._recognizer_type.value[1]}', (x, y + h + 20), cv.FONT_HERSHEY_PLAIN, 1, (0, 255, 0), 1)
         return frame
 
 
@@ -65,7 +68,7 @@ def main():
     """ Método de teste. """
     OpenCvVideoCapture(
         middleware=FaceDetectHaarcascade(
-            next_middleware=LbphFaceRecognizer()
+            next_middleware=FaceRecognizer()
         )
     ).execute()
 
