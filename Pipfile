@@ -15,6 +15,7 @@ beautifulsoup4 = "*"
 pandas = "*"
 numpy = "*"
 opencv-contrib-python = "*"
+pillow = "*"
 
 [requires]
 python_version = "3.9"

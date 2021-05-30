@@ -5,6 +5,8 @@ Utils Module.
 import time
 
 import cv2 as cv
+import numpy as np
+from PIL import ImageGrab
 
 
 class FpsShowInfo:
@@ -94,3 +96,38 @@ class FancyDraw:
         cv.line(frame, (x1, y1), (x1 - self._line_length, y1), self._color, self._thickness)
         cv.line(frame, (x1, y1), (x1, y1 - self._line_length), self._color, self._thickness)
         return frame
+
+
+class GetScreen:
+    """ Classe para pegar o screen do computador. """
+
+    def __init__(self, top=0, left=0, bottom=800, right=600):
+        self._top = top
+        self._left = left
+        self._bottom = bottom
+        self._right = right
+
+    def set(self, pos_id, value):
+        """ Altera as configurações do screen. """
+        if pos_id == 1:
+            self._top = value
+        elif pos_id == 2:
+            self._left = value
+        elif pos_id == 3:
+            self._bottom = value
+        elif pos_id == 4:
+            self._right = value
+        return self
+
+    def isOpened(self):
+        """ Informa que está funcionando. """
+        return True
+
+    def read(self):
+        """ Recupera a imagem da tela """
+        print_screen = np.array(ImageGrab.grab(bbox=(self._top, self._left, self._bottom, self._right)))
+        return print_screen
+
+    def release(self):
+        """ Não precisa retornar nada. """
+        pass

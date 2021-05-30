@@ -62,6 +62,7 @@ class FaceTraining(BaseMiddleware):
         if self._verbose:
             print('treinando...')
         for recognizer in RecognizerType:
+            # Recupera o classificador.
             c = recognizer.new_recognizer()
             c.train(src=self._faces, labels=self._ids)
             c.write(os.path.join(settings.BASE_DIR + '/data/training', f'{recognizer.value[1]}.yml'))

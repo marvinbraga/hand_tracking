@@ -8,7 +8,7 @@ from enum import Enum
 import cv2 as cv
 import numpy as np
 
-from core.utils import Point
+from core.utils import Point, GetScreen
 
 
 class OpenCvFlip(Enum):
@@ -109,7 +109,7 @@ class OpenCvVideoCapture:
     def init_capture(self):
         """ Inicializa a captura de vídeo. """
         if self._file_name:
-            result = cv.VideoCapture(os.path.normpath(self._file_name))
+            result = GetScreen() if self._file_name == "screen" else cv.VideoCapture(os.path.normpath(self._file_name))
         else:
             result = cv.VideoCapture(0)
         return result

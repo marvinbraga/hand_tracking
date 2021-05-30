@@ -32,4 +32,4 @@ class HandLandMarks(Enum):
     @staticmethod
     def all():
         """ Retorna Lista com todos os atributos. """
-        return [HandLandMarks(mark) for mark in range(21)]
+        return [mark for mark in HandLandMarks]
