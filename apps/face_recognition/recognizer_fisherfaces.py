@@ -27,14 +27,14 @@ class Faces2Recognize:
         return result
 
 
-class EigenFaceRecognizer(BaseMiddleware):
+class FisherFaceRecognizer(BaseMiddleware):
     """ Reconhecedor EigenFace. """
     _width, _height = 220, 220
 
     def __init__(self, next_middleware=None):
-        super(EigenFaceRecognizer, self).__init__(next_middleware)
-        self._recognizer_type = RecognizerType.EIGEN
-        self._recognizer = self._recognizer_type.new_recognizer(num_components=50, threshold=2)
+        super(FisherFaceRecognizer, self).__init__(next_middleware)
+        self._recognizer_type = RecognizerType.FISHER
+        self._recognizer = self._recognizer_type.new_recognizer()
         self._recognizer.read(
             os.path.join(settings.BASE_DIR + '/data/training', f'{self._recognizer_type.value[1]}.yml'))
         self._faces = []
@@ -65,7 +65,7 @@ def main():
     """ Método de teste. """
     OpenCvVideoCapture(
         middleware=FaceDetectHaarcascade(
-            next_middleware=EigenFaceRecognizer()
+            next_middleware=FisherFaceRecognizer()
         )
     ).execute()
 
