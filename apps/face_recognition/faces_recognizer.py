@@ -32,7 +32,7 @@ class FaceRecognizer(BaseMiddleware):
     _width, _height = 220, 220
 
     def __init__(self, next_middleware=None,
-                 recognizer_type=RecognizerType.LBPH, recognizer_params={'threshold': None}):
+                 recognizer_type=RecognizerType.LBPH, recognizer_params={}):
         super(FaceRecognizer, self).__init__(next_middleware)
         self._recognizer_type = recognizer_type
         self._recognizer = self._recognizer_type.new_recognizer(**recognizer_params)
