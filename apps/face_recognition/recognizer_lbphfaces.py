@@ -1,6 +1,6 @@
 # coding=utf-8
 """
-Módulo de Reconhecedor Fisher.
+Módulo de Reconhecedor LbphFaces.
 """
 import os
 
@@ -27,13 +27,13 @@ class Faces2Recognize:
         return result
 
 
-class FisherFaceRecognizer(BaseMiddleware):
+class EigenFaceRecognizer(BaseMiddleware):
     """ Reconhecedor EigenFace. """
     _width, _height = 220, 220
 
     def __init__(self, next_middleware=None):
-        super(FisherFaceRecognizer, self).__init__(next_middleware)
-        self._recognizer_type = RecognizerType.FISHER
+        super(EigenFaceRecognizer, self).__init__(next_middleware)
+        self._recognizer_type = RecognizerType.LBPH
         self._recognizer = self._recognizer_type.new_recognizer()
         self._recognizer.read(
             os.path.join(settings.BASE_DIR + '/data/training', f'{self._recognizer_type.value[1]}.yml'))
@@ -65,7 +65,7 @@ def main():
     """ Método de teste. """
     OpenCvVideoCapture(
         middleware=FaceDetectHaarcascade(
-            next_middleware=FisherFaceRecognizer()
+            next_middleware=EigenFaceRecognizer()
         )
     ).execute()
 
