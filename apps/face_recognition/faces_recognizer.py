@@ -78,6 +78,7 @@ def main():
         file_name='screen', screen=OpenCvScreen(1200, 800),
         middleware=FaceDetectHaarcascade(
             next_middleware=FaceRecognizer(
+                # recognizer_type=RecognizerType.LBPH,
                 recognizer_params={'radius': 2, 'neighbors': 2, 'grid_x': 7, 'grid_y': 7, 'threshold': 50})
         )
     ).execute()
