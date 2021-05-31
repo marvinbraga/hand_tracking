@@ -115,7 +115,7 @@ class OpenCvVideoCapture:
                 result = GetScreen()
                 self._flip = OpenCvFlip.NONE
             else:
-                cv.VideoCapture(os.path.normpath(self._file_name))
+                result = cv.VideoCapture(os.path.normpath(self._file_name))
         else:
             result = cv.VideoCapture(0)
         return result
@@ -130,7 +130,7 @@ class OpenCvVideoCapture:
             if self._flip is not OpenCvFlip.NONE:
                 frame = cv.flip(frame, self._flip.value)
             if self._middleware:
-                self._middleware.process(frame)
+                frame = self._middleware.process(frame)
 
             cv.imshow(self._win_name, frame)
             if cv.waitKey(1) & 0xFF == ord('q'):

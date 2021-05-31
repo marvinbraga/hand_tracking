@@ -3,6 +3,7 @@
 Face Capture
 """
 import os
+from time import sleep
 
 import cv2 as cv
 
@@ -32,7 +33,10 @@ class FaceDetectHaarcascade(BaseMiddleware):
         """ Executa o processamento da captura de face. """
         gray_image = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
         faces = self._classfier.detectMultiScale(
-            gray_image, scaleFactor=1.5, minSize=(100, 100))
+            gray_image, scaleFactor=1.5, minSize=(50, 50))
+
+        if self._next:
+            self._next.clear_faces()
         # Pinta o quadrado.
         for x, y, w, h in faces:
             b_box = x, y, w, h
@@ -40,8 +44,6 @@ class FaceDetectHaarcascade(BaseMiddleware):
             if self._next:
                 self._next.add_faces(b_box)
                 self._next.set_gray_image(gray_image)
-            break
-
         return frame
 
 
@@ -52,11 +54,11 @@ class FaceCaptureHaarcascade(BaseMiddleware):
     def __init__(self, next_middleware=None):
         super(FaceCaptureHaarcascade, self).__init__(next_middleware)
         self._id = int(input('Informe o identificador numérico da face: '))
-        print('Pressione ENTER para bater um foto para o treinamento.')
-        self._max = 25
+        self._max = 75
         self._order = 1
         self._faces = []
         self._gray_image = None
+        self._started = False
 
     def add_faces(self, value):
         """ Informa as faces detectadas. """
@@ -73,17 +75,22 @@ class FaceCaptureHaarcascade(BaseMiddleware):
 
     def _process(self, frame):
         """ Executa a captura da imagem. """
+        if not self._started:
+            input('Pressione ENTER para iniciar a captura das fotos.')
+            self._started = True
+
         if self._faces:
             x, y, w, h = self._faces[0]
             # Salva a imagem.
-            if cv.waitKey(1) & 0xFF == 13:
-                image = cv.resize(self._gray_image[y: y + h, x: x + w], (self._width, self._height))
-                file_name = self._save_captured_image()
-                cv.imwrite(file_name, image)
-                print(file_name, 'capturada com sucesso.')
-                self._order += 1
+            # if cv.waitKey(1) & 0xFF == 13:
+            image = cv.resize(self._gray_image[y: y + h, x: x + w], (self._width, self._height))
+            file_name = self._save_captured_image()
+            cv.imwrite(file_name, image)
+            print(file_name, 'capturada com sucesso.')
+            self._order += 1
             if self._order >= self._max + 1:
                 raise LimitReached()
+            sleep(1)
         return frame
 
 

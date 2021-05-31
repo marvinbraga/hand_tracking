@@ -51,9 +51,9 @@ class FaceTraining(BaseMiddleware):
     def _new_recognizer(recognizer_type):
         """ Recupera o recognizer. """
         result = recognizer_type.new_recognizer(**{
-            RecognizerType.EIGEN: {'num_components': 50, 'threshold': 2},
-            RecognizerType.FISHER: {'num_components': None, 'threshold': None},
-            RecognizerType.LBPH: {'threshold': None}
+            RecognizerType.EIGEN: {'num_components': 40, 'threshold': 8000},
+            RecognizerType.FISHER: {'num_components': 3, 'threshold': 2000},
+            RecognizerType.LBPH: {'radius': 2, 'neighbors': 2, 'grid_x': 7, 'grid_y': 7, 'threshold': 50}
         }[recognizer_type])
         return result
 
