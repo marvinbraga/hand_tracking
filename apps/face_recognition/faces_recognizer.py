@@ -10,7 +10,7 @@ import settings
 from apps.face_recognition.capture import FaceDetectHaarcascade
 from core.abstract_middleware import BaseMiddleware
 from core.utils import RecognizerType
-from core.video_capture import OpenCvVideoCapture, NamedBox
+from core.video_capture import OpenCvVideoCapture, NamedBox, OpenCvScreen
 
 
 class Faces2Recognize:
@@ -75,9 +75,10 @@ class FaceRecognizer(BaseMiddleware):
 def main():
     """ Método de teste. """
     OpenCvVideoCapture(
-        # file_name='screen', screen=OpenCvScreen(1200, 800),
+        file_name='screen', screen=OpenCvScreen(1200, 800),
         middleware=FaceDetectHaarcascade(
-            next_middleware=FaceRecognizer()
+            next_middleware=FaceRecognizer(
+                recognizer_params={'radius': 2, 'neighbors': 2, 'grid_x': 7, 'grid_y': 7, 'threshold': 50})
         )
     ).execute()
 
