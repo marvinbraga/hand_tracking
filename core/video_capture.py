@@ -109,7 +109,6 @@ class OpenCvVideoCapture:
 
     def init_capture(self):
         """ Inicializa a captura de vídeo. """
-        result = None
         if self._file_name:
             if self._file_name == "screen":
                 result = GetScreen()

@@ -10,7 +10,7 @@ import settings
 from apps.face_recognition.capture import FaceDetectHaarcascade
 from core.abstract_middleware import BaseMiddleware
 from core.utils import RecognizerType
-from core.video_capture import OpenCvVideoCapture, NamedBox, OpenCvScreen
+from core.video_capture import OpenCvVideoCapture, NamedBox
 
 
 class Faces2Recognize:
