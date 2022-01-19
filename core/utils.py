@@ -25,7 +25,7 @@ class FpsShowInfo:
     def execute(self, img):
         """
         Método para exibir informação com OpenCv.
-        :param: Imagem capturada pelo OpenCv.
+        :param: img = Imagem capturada pelo OpenCv.
         :return: self.
         """
         # calculando o fps.
