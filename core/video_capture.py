@@ -127,7 +127,7 @@ class OpenCvVideoCapture:
         while self._cap.isOpened():
             ret, frame = self._cap.read()
             if self._flip is not OpenCvFlip.NONE:
-                frame = cv.flip(frame, self._flip.value)
+                frame = cv.fqlip(frame, self._flip.value)
             if self._middleware:
                 frame = self._middleware.process(frame)
 
