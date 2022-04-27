@@ -30,7 +30,7 @@ class AsciiVideo:
         self.image = None
         self.ascii_chars = ''
         self.ascii_image = ''
-        self.space = 4
+        self.space = 5
         self.font_index = 0
 
     def set_image(self, image):
