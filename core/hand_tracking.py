@@ -67,7 +67,7 @@ class HandDetector:
         if results.multi_hand_landmarks:
             for hand_lms in results.multi_hand_landmarks:
                 if self._bold_points:
-                    self._bold_points.show(image=img, hand_lms=hand_lms)
+                    self._bold_points.prepare(image=img, hand_lms=hand_lms)
                     self._points = self._bold_points.points
                 if draw:
                     # Apresentando os pontos e os traços nas mãos.

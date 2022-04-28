@@ -1,3 +1,6 @@
+import os
+import sys
+
 import cv2
 import numpy as np
 
@@ -27,6 +30,7 @@ class AsciiVideo:
     def __init__(self, new_width=100, is_dark=True):
         self.is_dark = is_dark
         self.new_width = new_width
+        self.new_height = 0
         self.image = None
         self.ascii_chars = ''
         self.ascii_image = ''
@@ -40,8 +44,8 @@ class AsciiVideo:
     def resize_image(self):
         w, h = self.image.size
         ratio = h / w
-        new_h = int(self.new_width * ratio)
-        self.image = self.image.resize((self.new_width, new_h))
+        self.new_height = int(self.new_width * ratio)
+        self.image = self.image.resize((self.new_width, self.new_height))
         return self
 
     def clear(self):
@@ -57,7 +61,7 @@ class AsciiVideo:
         self.ascii_chars = ''.join([ascii_chars[pxl // 25] for pxl in self.image.getdata()])
         return self
 
-    def show(self):
+    def prepare(self):
         total_pixels = len(self.ascii_chars)
         self.ascii_image = "\n".join(
             [self.ascii_chars[index:(index + self.new_width)] for index in range(0, total_pixels, self.new_width)])
@@ -74,15 +78,20 @@ class AsciiVideo:
 def main():
     cap = cv2.VideoCapture(0)
     try:
-        width = 160
+        width = 300
         ascii_video = AsciiVideo(new_width=width)
         while True:
             ret, frame = cap.read()
             cv2.imshow("frame", frame)
-            background = np.zeros((*Image.fromarray(frame).size[::-1], 3), dtype=np.uint8)
             ascii_video.set_image(
-                Image.fromarray(frame)).resize_image().grayify().pixel_to_ascii().show()
-            cv2.imshow("chars", ascii_video.text_to_cv(background))
+                Image.fromarray(frame)).resize_image().grayify().pixel_to_ascii().prepare()
+
+            sys.stdout.write(ascii_video.ascii_image)
+            os.system('cls' if os.name == 'nt' else 'clear')
+            # size = Image.fromarray(frame).size[::-1]
+            # background = np.zeros((*size, 3), dtype=np.uint8)
+            # cv2.imshow("chars", ascii_video.text_to_cv(background))
+
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
     finally:
