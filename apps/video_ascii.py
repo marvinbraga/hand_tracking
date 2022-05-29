@@ -75,10 +75,10 @@ class AsciiVideo:
         return img
 
 
-def main():
+def main(use_cv=False):
     cap = cv2.VideoCapture(0)
     try:
-        width = 300
+        width = 160
         ascii_video = AsciiVideo(new_width=width)
         while True:
             ret, frame = cap.read()
@@ -86,11 +86,13 @@ def main():
             ascii_video.set_image(
                 Image.fromarray(frame)).resize_image().grayify().pixel_to_ascii().prepare()
 
-            sys.stdout.write(ascii_video.ascii_image)
-            os.system('cls' if os.name == 'nt' else 'clear')
-            # size = Image.fromarray(frame).size[::-1]
-            # background = np.zeros((*size, 3), dtype=np.uint8)
-            # cv2.imshow("chars", ascii_video.text_to_cv(background))
+            if use_cv:
+                size = Image.fromarray(frame).size[::-1]
+                background = np.zeros((*size, 3), dtype=np.uint8)
+                cv2.imshow("chars", ascii_video.text_to_cv(background))
+            else:
+                sys.stdout.write(ascii_video.ascii_image)
+                os.system('cls' if os.name == 'nt' else 'clear')
 
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
@@ -100,4 +102,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main(use_cv=True)

@@ -16,6 +16,7 @@ pandas = "*"
 numpy = "*"
 opencv-contrib-python = "*"
 pillow = "*"
+pygame = "*"
 
 [requires]
 python_version = "3.9"
