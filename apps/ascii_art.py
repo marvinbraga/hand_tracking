@@ -81,7 +81,9 @@ class ArtConverter:
 
 class ArtConverterColor(ArtConverter):
     
-    ASCII_CHARS = '_ixzao*#MW&8%B@$'
+    ASCII_CHARS_CLEAR = list("Ñ@#W$9876543210?:abc;:+=-,._ ")
+    ASCII_CHARS = ASCII_CHARS_CLEAR[::-1]
+    # ASCII_CHARS = ' ixzao*#MW&8%B@$'
 
     def __init__(self, color_lvl=8, *args, **kwargs):
         self.gray_image = None
@@ -127,5 +129,5 @@ class ArtConverterColor(ArtConverter):
 
 
 if __name__ == '__main__':
-    app = ArtConverter(path='data\\car_original.jpg')
+    app = ArtConverterColor(path='data\\car_original.jpg')
     app.run()
