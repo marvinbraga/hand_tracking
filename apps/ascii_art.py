@@ -1,22 +1,29 @@
+from abc import ABC
+
 import pygame as pg
 import numpy as np
 import cv2
 
+from core.abstract_middleware import BaseMiddleware
+from core.utils import GetScreen
+from core.video_capture import OpenCvVideoCapture, OpenCvFlip
 
-class ArtConverter:
+
+class ArtConverter(BaseMiddleware):
 
     ASCII_CHARS = '.",:;!~+-XMO*w&8@'
     ASCII_COEFF = 255 // (len(ASCII_CHARS) - 1)
 
-    def __init__(self, path, font_size=12):
+    def __init__(self, path, font_size=12, next_middleware=None, video_capture=None):
+        super().__init__(next_middleware=next_middleware)
         pg.init()
-        self.cap = cv2.VideoCapture(0)
 
         self.font_size = font_size
         self.path = path
         self.cv2_image = None
         self.image = None
-        self.load_image()
+        self.load_image(video_capture.read()[1])
+
         self.res = self.width, self.height = self.image.shape[0], self.image.shape[1]
         self.surface = pg.display.set_mode(self.res)
         self.clock = pg.time.Clock()
@@ -25,14 +32,15 @@ class ArtConverter:
         self.char_step = int(self.font_size * 0.6)
         self.rendered_ascii_chars = self.set_rendered_chars()
 
-    def load_image(self):
-        ret, self.cv2_image = self.cap.read()  # cv2.imread(self.path)
-        self.image = self.get_image()
+    def load_image(self, frame=None):
+        ret, self.cv2_image = None, frame
+        self.image = self.get_image(frame)
 
     def set_rendered_chars(self):
         return [self.font.render(char, False, 'white') for char in self.ASCII_CHARS]
 
-    def get_image(self):
+    def get_image(self, frame=None):
+        self.cv2_image = frame
         transposed_image = cv2.transpose(self.cv2_image)
         # rgb_image = cv2.cvtColor(transposed_image, cv2.COLOR_RGB2BGR)
         bw_image = cv2.cvtColor(transposed_image, cv2.COLOR_BGR2GRAY)
@@ -58,25 +66,20 @@ class ArtConverter:
         pygame_image = pg.surfarray.array3d(self.surface)
         cv2_img = cv2.transpose(pygame_image)
         cv2.imwrite('data\\ascii_converted_image.jpg', cv2_img)
+        print('imagem transformada com sucesso.')
 
     def draw(self):
         self.surface.fill('black')
         self.draw_converted_image()
         self.draw_cv2_image()
 
-    def run(self):
-        while True:
-            for i in pg.event.get():
-                if i.type == pg.QUIT:
-                    exit()
-                elif i.type == pg.KEYDOWN:
-                    if i.key == pg.K_s:
-                        self.save_image()
-            self.load_image()
-            self.draw()
-            pg.display.set_caption(str(self.clock.get_fps()))
-            pg.display.flip()
-            self.clock.tick()
+    def _process(self, frame):
+        self.load_image(frame)
+        self.draw()
+        pg.display.set_caption(str(self.clock.get_fps()))
+        pg.display.flip()
+        self.clock.tick()
+        return frame
 
 
 class ArtConverterColor(ArtConverter):
@@ -91,11 +94,11 @@ class ArtConverterColor(ArtConverter):
         self.color_lvl = color_lvl
         self.palette, self.color_coeff = self.create_palette()
 
-    def load_image(self):
-        self.image, self.gray_image = self.get_image()
+    def load_image(self, frame=None):
+        self.image, self.gray_image = self.get_image(frame)
 
-    def get_image(self):
-        ret, self.cv2_image = self.cap.read()  # cv2.imread(self.path)
+    def get_image(self, frame=None):
+        _, self.cv2_image = None, frame
         transposed_image = cv2.transpose(self.cv2_image)
         image = cv2.cvtColor(transposed_image, cv2.COLOR_BGR2RGB)
         bw_image = cv2.cvtColor(transposed_image, cv2.COLOR_BGR2GRAY)
@@ -119,15 +122,28 @@ class ArtConverterColor(ArtConverter):
         color_indices = self.image // self.color_coeff
         for x in range(0, self.width, self.char_step):
             for y in range(0, self.height, self.char_step):
-                char_index = char_indices[x, y]
-                if char_index:
-                    try:
-                        char, color = self.ASCII_CHARS[char_index], tuple(color_indices[x, y])
-                        self.surface.blit(self.palette[char][color], (x, y))
-                    except Exception:
-                        pass
+                try:
+                    char_index = char_indices[x, y]
+                    if char_index:
+                        try:
+                            char, color = self.ASCII_CHARS[char_index], tuple(color_indices[x, y])
+                            self.surface.blit(self.palette[char][color], (x, y))
+                        except Exception:
+                            pass
+                except Exception:
+                    pass
 
 
 if __name__ == '__main__':
-    app = ArtConverterColor(path='data\\car_original.jpg')
-    app.run()
+    file_name = [
+        None,
+        'screen',
+        '.\\data\\car_original.jpg'
+    ][0]
+    OpenCvVideoCapture(
+        flip=OpenCvFlip.NONE,
+        file_name=file_name,
+        middleware=ArtConverterColor(
+            path=file_name,
+            video_capture=OpenCvVideoCapture.init_capture(file_name))
+    ).execute()

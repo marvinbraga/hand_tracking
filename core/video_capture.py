@@ -87,6 +87,7 @@ class OpenCvScreen:
 
 class OpenCvVideoCapture:
     """ Classe para trabalhar com o OpenCvVideoCapture. """
+    cap = None
 
     def __init__(self, middleware, flip=OpenCvFlip.VERTICAL, screen=OpenCvScreen(),
                  file_name=None,
@@ -98,7 +99,7 @@ class OpenCvVideoCapture:
         self._args = args
         self._kwargs = kwargs
         self._middleware = middleware
-        self._cap = self.init_capture()
+        self._cap = self.init_capture(file_name)
         self._cap.set(3, screen.width)
         self._cap.set(4, screen.height)
 
@@ -107,16 +108,20 @@ class OpenCvVideoCapture:
         """ Retorna informações do screen. """
         return self._screen
 
-    def init_capture(self):
+    @staticmethod
+    def init_capture(file_name):
         """ Inicializa a captura de vídeo. """
-        if self._file_name:
-            if self._file_name == "screen":
+        if file_name:
+            if file_name == "screen":
                 result = GetScreen()
-                self._flip = OpenCvFlip.NONE
             else:
-                result = cv.VideoCapture(os.path.normpath(self._file_name))
+                result = cv.VideoCapture(os.path.normpath(file_name))
         else:
             result = cv.VideoCapture(0)
+        if OpenCvVideoCapture.cap:
+            result = OpenCvVideoCapture.cap
+        else:
+            OpenCvVideoCapture.cap = result
         return result
 
     def execute(self):
@@ -127,13 +132,15 @@ class OpenCvVideoCapture:
         while self._cap.isOpened():
             ret, frame = self._cap.read()
             if self._flip is not OpenCvFlip.NONE:
-                frame = cv.fqlip(frame, self._flip.value)
+                frame = cv.flip(frame, self._flip.value)
             if self._middleware:
                 frame = self._middleware.process(frame)
 
             cv.imshow(self._win_name, frame)
             if cv.waitKey(1) & 0xFF == ord('q'):
                 break
+            elif cv.waitKey(1) & 0xFF == ord('s'):
+                self._middleware.save_image()
 
         self._cap.release()
         cv.destroyAllWindows()
