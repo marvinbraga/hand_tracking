@@ -1,16 +1,12 @@
-from abc import ABC
-
-import pygame as pg
-import numpy as np
 import cv2
+import numpy as np
+import pygame as pg
 
 from core.abstract_middleware import BaseMiddleware
-from core.utils import GetScreen
 from core.video_capture import OpenCvVideoCapture, OpenCvFlip
 
 
 class ArtConverter(BaseMiddleware):
-
     ASCII_CHARS = '.",:;!~+-XMO*w&8@'
     ASCII_COEFF = 255 // (len(ASCII_CHARS) - 1)
 
@@ -83,9 +79,9 @@ class ArtConverter(BaseMiddleware):
 
 
 class ArtConverterColor(ArtConverter):
-    
     ASCII_CHARS_CLEAR = list("Ñ@#W$9876543210?:abc;:+=-,._ ")
     ASCII_CHARS = ASCII_CHARS_CLEAR[::-1]
+
     # ASCII_CHARS = ' ixzao*#MW&8%B@$'
 
     def __init__(self, color_lvl=8, *args, **kwargs):
