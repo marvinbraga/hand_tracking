@@ -17,6 +17,7 @@ numpy = "*"
 opencv-contrib-python = "*"
 pillow = "*"
 pygame = "*"
+python-decouple = "*"
 
 [requires]
 python_version = "3.9"

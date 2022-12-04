@@ -144,3 +144,55 @@ class OpenCvVideoCapture:
 
         self._cap.release()
         cv.destroyAllWindows()
+
+
+class OpenCvCamCaptureByRtsp:
+    
+    def __init__(self, username, password, ip, port, rote,
+                 middleware=None,
+                 flip=OpenCvFlip.VERTICAL,
+                 screen=OpenCvScreen(),
+                 win_name='OpenCV Video Capture | Frame',
+                 *args, **kwargs):
+        self._screen = screen
+        self._args = args
+        self._kwargs = kwargs
+        self._win_name = win_name
+        self._flip = flip
+        self._middleware = middleware
+        # /cam/realmonitor?channel=1&subtype=0
+        self._url = f'rtsp://{username}:{password}@{ip}:{port}{rote}'
+        self._cap = self.init_capture()
+        self._cap.set(3, screen.width)
+        self._cap.set(4, screen.height)
+
+    @property
+    def screen(self):
+        """ Retorna informações do screen. """
+        return self._screen
+
+    def init_capture(self):
+        os.environ['OPENCV_FFMPEG_CAPTURE_OPTIONS'] = 'rtsp_transport;udp'
+        result = cv.VideoCapture(self._url, cv.CAP_FFMPEG)
+        return result
+
+    def execute(self):
+        """
+        Método para executa o OpenCvVideoCapture
+        :return:
+        """
+        while self._cap.isOpened():
+            ret, frame = self._cap.read()
+            if self._flip is not OpenCvFlip.NONE:
+                frame = cv.flip(frame, self._flip.value)
+            if self._middleware:
+                frame = self._middleware.process(frame)
+
+            cv.imshow(self._win_name, frame)
+            if cv.waitKey(1) & 0xFF == ord('q'):
+                break
+            elif cv.waitKey(1) & 0xFF == ord('s'):
+                self._middleware.save_image()
+
+        self._cap.release()
+        cv.destroyAllWindows()
