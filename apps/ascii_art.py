@@ -2,7 +2,6 @@ import cv2
 import numpy as np
 import pygame as pg
 
-from apps.face_mesh_detect_basic import FaceMeshMiddleware
 from core.abstract_middleware import BaseMiddleware
 from core.video_capture import OpenCvVideoCapture, OpenCvFlip
 
@@ -11,7 +10,7 @@ class ArtConverter(BaseMiddleware):
     ASCII_CHARS = '.",:;!~+-XMO*w&8@'
     ASCII_COEFF = 255 // (len(ASCII_CHARS) - 1)
 
-    def __init__(self, path, font_size=12, next_middleware=None, video_capture=None):
+    def __init__(self, path=None, font_size=12, next_middleware=None, video_capture=None):
         super().__init__(next_middleware=next_middleware)
         pg.init()
 
@@ -140,5 +139,7 @@ if __name__ == '__main__':
     OpenCvVideoCapture(
         flip=OpenCvFlip.NONE,
         file_name=file_name,
-        middleware=FaceMeshMiddleware()
+        middleware=ArtConverterColor(
+            video_capture=OpenCvVideoCapture(None).init_capture()
+        )
     ).execute()

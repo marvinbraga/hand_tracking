@@ -3,6 +3,7 @@
 Módulo de OpenCvVideoCapture.
 """
 import os
+from abc import ABCMeta, abstractmethod
 from enum import Enum
 
 import cv2 as cv
@@ -85,7 +86,7 @@ class OpenCvScreen:
         return self._width, self._height
 
 
-class OpenCvVideoCapture:
+class AbstractOpenCvVideoCapture(metaclass=ABCMeta):
     """ Classe para trabalhar com o OpenCvVideoCapture. """
     cap = None
 
@@ -99,7 +100,7 @@ class OpenCvVideoCapture:
         self._args = args
         self._kwargs = kwargs
         self._middleware = middleware
-        self._cap = self.init_capture(file_name)
+        self._cap = self.init_capture()
         self._cap.set(3, screen.width)
         self._cap.set(4, screen.height)
 
@@ -108,11 +109,40 @@ class OpenCvVideoCapture:
         """ Retorna informações do screen. """
         return self._screen
 
-    @staticmethod
-    def init_capture(file_name):
+    @abstractmethod
+    def init_capture(self):
         """ Inicializa a captura de vídeo. """
-        if file_name:
-            if file_name == "screen":
+        pass
+
+    def execute(self):
+        """
+        Método para executa o OpenCvVideoCapture
+        :return:
+        """
+        while self._cap.isOpened():
+            ret, frame = self._cap.read()
+            if self._flip is not OpenCvFlip.NONE:
+                frame = cv.flip(frame, self._flip.value)
+            if self._middleware:
+                frame = self._middleware.process(frame)
+
+            cv.imshow(self._win_name, frame)
+            if cv.waitKey(1) & 0xFF == ord('q'):
+                break
+            elif cv.waitKey(1) & 0xFF == ord('s'):
+                self._middleware.save_image()
+
+        self._cap.release()
+        cv.destroyAllWindows()
+
+
+class OpenCvVideoCapture(AbstractOpenCvVideoCapture):
+    """ Classe para trabalhar com o OpenCvVideoCapture. """
+
+    def init_capture(self):
+        """ Inicializa a captura de vídeo. """
+        if self._file_name:
+            if self._file_name == "screen":
                 result = GetScreen()
             else:
                 result = cv.VideoCapture(os.path.normpath(file_name))
@@ -124,29 +154,8 @@ class OpenCvVideoCapture:
             OpenCvVideoCapture.cap = result
         return result
 
-    def execute(self):
-        """
-        Método para executa o OpenCvVideoCapture
-        :return:
-        """
-        while self._cap.isOpened():
-            ret, frame = self._cap.read()
-            if self._flip is not OpenCvFlip.NONE:
-                frame = cv.flip(frame, self._flip.value)
-            if self._middleware:
-                frame = self._middleware.process(frame)
 
-            cv.imshow(self._win_name, frame)
-            if cv.waitKey(1) & 0xFF == ord('q'):
-                break
-            elif cv.waitKey(1) & 0xFF == ord('s'):
-                self._middleware.save_image()
-
-        self._cap.release()
-        cv.destroyAllWindows()
-
-
-class OpenCvCamCaptureByRtsp:
+class OpenCvCamCaptureByRtsp(AbstractOpenCvVideoCapture):
     
     def __init__(self, username, password, ip, port, rote,
                  middleware=None,
@@ -154,45 +163,11 @@ class OpenCvCamCaptureByRtsp:
                  screen=OpenCvScreen(),
                  win_name='OpenCV Video Capture | Frame',
                  *args, **kwargs):
-        self._screen = screen
-        self._args = args
-        self._kwargs = kwargs
-        self._win_name = win_name
-        self._flip = flip
-        self._middleware = middleware
         # /cam/realmonitor?channel=1&subtype=0
         self._url = f'rtsp://{username}:{password}@{ip}:{port}{rote}'
-        self._cap = self.init_capture()
-        self._cap.set(3, screen.width)
-        self._cap.set(4, screen.height)
-
-    @property
-    def screen(self):
-        """ Retorna informações do screen. """
-        return self._screen
+        super().__init__(middleware, flip, screen, win_name=win_name, *args, **kwargs)
 
     def init_capture(self):
         os.environ['OPENCV_FFMPEG_CAPTURE_OPTIONS'] = 'rtsp_transport;udp'
         result = cv.VideoCapture(self._url, cv.CAP_FFMPEG)
         return result
-
-    def execute(self):
-        """
-        Método para executa o OpenCvVideoCapture
-        :return:
-        """
-        while self._cap.isOpened():
-            ret, frame = self._cap.read()
-            if self._flip is not OpenCvFlip.NONE:
-                frame = cv.flip(frame, self._flip.value)
-            if self._middleware:
-                frame = self._middleware.process(frame)
-
-            cv.imshow(self._win_name, frame)
-            if cv.waitKey(1) & 0xFF == ord('q'):
-                break
-            elif cv.waitKey(1) & 0xFF == ord('s'):
-                self._middleware.save_image()
-
-        self._cap.release()
-        cv.destroyAllWindows()
