@@ -7,13 +7,7 @@ from decouple import config
 
 
 class TextCreate:
-    """
-    # list engines
-    engines = openai.Engine.list()
-    # print the first engine's id
-    print("engines: ", engines.data[0].id)
-    """
-    engine = "ada"
+    engine = "text-davinci-003"
     openai.api_key = config("open_ai_key", cast=str)
 
     def __init__(self, prompt):
@@ -26,7 +20,7 @@ class TextCreate:
 
     def execute(self):
         response = openai.Completion.create(
-            model="text-davinci-003",
+            model=self.engine,
             prompt=self._prompt,
             temperature=0.7,
             max_tokens=256,
@@ -75,6 +69,9 @@ class ImageCreate:
 #     prompt="f1 car hdr 8k ultra realistic futuristic",
 #     size="1024x1024",
 # ).execute()
+
+engines = openai.Engine.list()
+print("\n".join([engine.id for engine in engines.data]))
 
 print(TextCreate(
     prompt="Quais os melhores sites sobre Django e Python?"
