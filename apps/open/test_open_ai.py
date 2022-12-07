@@ -5,17 +5,37 @@ import time
 import openai
 from decouple import config
 
-# # list engines
-# engines = openai.Engine.list()
-#
-# # print the first engine's id
-# print("engines: ", engines.data[0].id)
-#
-# # create a completion
-# completion = openai.Completion.create(engine="ada", prompt="Hello world")
-#
-# # print the completion
-# print("completation: ", completion.choices[0].text)
+
+class TextCreate:
+    """
+    # list engines
+    engines = openai.Engine.list()
+    # print the first engine's id
+    print("engines: ", engines.data[0].id)
+    """
+    engine = "ada"
+    openai.api_key = config("open_ai_key", cast=str)
+
+    def __init__(self, prompt):
+        self._prompt = prompt
+        self._result = None
+
+    @property
+    def result(self):
+        return self._result
+
+    def execute(self):
+        response = openai.Completion.create(
+            model="text-davinci-003",
+            prompt=self._prompt,
+            temperature=0.7,
+            max_tokens=256,
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0
+        )
+        self._result = response.choices[0].text
+        return self
 
 
 class ImageCreate:
@@ -51,7 +71,11 @@ class ImageCreate:
         self._save_image(response)
 
 
-ImageCreate(
-    prompt="f1 car hdr 8k ultra realistic futuristic",
-    size="1024x1024",
-).execute()
+# ImageCreate(
+#     prompt="f1 car hdr 8k ultra realistic futuristic",
+#     size="1024x1024",
+# ).execute()
+
+print(TextCreate(
+    prompt="Quais os melhores sites sobre Django e Python?"
+).execute().result)
