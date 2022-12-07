@@ -5,8 +5,6 @@ import time
 import openai
 from decouple import config
 
-openai.api_key = config("open_ai_key", cast=str)
-
 # # list engines
 # engines = openai.Engine.list()
 #
@@ -19,22 +17,41 @@ openai.api_key = config("open_ai_key", cast=str)
 # # print the completion
 # print("completation: ", completion.choices[0].text)
 
-prompt_text = "age of empires hdr 8k ultra realistic cyberpunk futuristic"
 
-start = time.perf_counter()
-response = openai.Image.create(
-    prompt=prompt_text,
-    n=1,
-    size="256x256",
-    response_format="b64_json"
-)
+class ImageCreate:
+    openai.api_key = config("open_ai_key", cast=str)
 
-request_time = time.perf_counter() - start
-print("Request completed in {0:.0f}ms".format(request_time))
+    def __init__(self, prompt, path="./data/", size="256x256", number_of_images=1):
+        self._size = size
+        self._number_of_images = number_of_images
+        self._path = path
+        self._prompt = prompt
+
+    def _save_image(self, response):
+        image_64_encode = json.loads(str(response))["data"][0]["b64_json"]
+        image_64_decode = base64.b64decode(image_64_encode)
+        file_name = self._path + self._prompt.replace(' ', '_') + '.png'
+        with open(file_name, 'wb') as image_result:
+            image_result.write(image_64_decode)
+        return self
+
+    def execute(self):
+        start = time.perf_counter()
+        try:
+            response = openai.Image.create(
+                prompt=self._prompt,
+                n=self._number_of_images,
+                size=self._size,
+                response_format="b64_json"
+            )
+        finally:
+            stopwatch = time.perf_counter() - start
+            print("Request completed in {0:.0f}ms".format(stopwatch))
+
+        self._save_image(response)
 
 
-image_64_encode = json.loads(str(response))["data"][0]["b64_json"]
-image_64_decode = base64.b64decode(image_64_encode)
-fileName = './data/' + prompt_text.replace(' ', '_') + '.png'
-with open(fileName, 'wb') as image_result:  # create a writable image and write the decoding result
-    image_result.write(image_64_decode)
+ImageCreate(
+    prompt="f1 car hdr 8k ultra realistic futuristic",
+    size="1024x1024",
+).execute()
