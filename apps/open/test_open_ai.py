@@ -65,14 +65,15 @@ class ImageCreate:
         self._save_image(response)
 
 
-# ImageCreate(
-#     prompt="f1 car hdr 8k ultra realistic futuristic",
-#     size="1024x1024",
-# ).execute()
+if __name__ == '__main__':
+    engines = openai.Engine.list()
+    print("\n".join([engine.id for engine in engines.data]))
 
-engines = openai.Engine.list()
-print("\n".join([engine.id for engine in engines.data]))
+    print(TextCreate(
+        prompt="Quais os melhores sites sobre Django e Python?"
+    ).execute().result)
 
-print(TextCreate(
-    prompt="Quais os melhores sites sobre Django e Python?"
-).execute().result)
+    ImageCreate(
+        prompt="f1 car hdr 8k ultra realistic futuristic",
+        size="1024x1024",
+    ).execute()

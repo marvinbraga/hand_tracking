@@ -20,6 +20,7 @@ pygame = "*"
 python-decouple = "*"
 whisper = "*"
 setuptools-rust = "*"
+invoke = "*"
 
 [requires]
 python_version = "3.9"
