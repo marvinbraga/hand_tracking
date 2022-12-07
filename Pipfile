@@ -18,6 +18,8 @@ opencv-contrib-python = "*"
 pillow = "*"
 pygame = "*"
 python-decouple = "*"
+whisper = "*"
+setuptools-rust = "*"
 
 [requires]
 python_version = "3.9"
