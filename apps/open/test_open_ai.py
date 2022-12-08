@@ -20,10 +20,10 @@ class TextCreate:
 
     def execute(self):
         response = openai.Completion.create(
-            model=self.engine,
+            engine=self.engine,
             prompt=self._prompt,
             temperature=0.7,
-            max_tokens=256,
+            max_tokens=256*3,
             top_p=1,
             frequency_penalty=0,
             presence_penalty=0
