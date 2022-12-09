@@ -40,14 +40,19 @@ class ImageCreate:
         self._number_of_images = number_of_images
         self._path = path
         self._prompt = prompt
+        self._file_name = None
 
     def _save_image(self, response):
         image_64_encode = json.loads(str(response))["data"][0]["b64_json"]
         image_64_decode = base64.b64decode(image_64_encode)
-        file_name = self._path + self._prompt.replace(' ', '_') + '.png'
-        with open(file_name, 'wb') as image_result:
+        self._file_name = self._path + self._prompt.replace(' ', '_') + '.png'
+        with open(self._file_name, 'wb') as image_result:
             image_result.write(image_64_decode)
         return self
+
+    @property
+    def file_name(self):
+        return self._file_name
 
     def execute(self):
         start = time.perf_counter()
@@ -63,6 +68,7 @@ class ImageCreate:
             print("Request completed in {0:.0f}ms".format(stopwatch))
 
         self._save_image(response)
+        return self
 
 
 if __name__ == '__main__':
@@ -73,7 +79,7 @@ if __name__ == '__main__':
         prompt="Quais os melhores sites sobre Django e Python?"
     ).execute().result)
 
-    ImageCreate(
+    print(ImageCreate(
         prompt="f1 car hdr 8k ultra realistic futuristic",
         size="1024x1024",
-    ).execute()
+    ).execute().file_name)

@@ -1,6 +1,6 @@
 import cv2
 
-img = cv2.imread("03_02.png", 1)
+img = cv2.imread("03_06_1.png", 1)
 gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
 thresh = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 115, 1)
 cv2.imshow("Binary", thresh)
