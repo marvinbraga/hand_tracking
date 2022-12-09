@@ -21,6 +21,7 @@ python-decouple = "*"
 whisper = "*"
 setuptools-rust = "*"
 invoke = "*"
+jupyter = "*"
 
 [requires]
 python_version = "3.9"

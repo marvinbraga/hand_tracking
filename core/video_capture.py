@@ -145,7 +145,7 @@ class OpenCvVideoCapture(AbstractOpenCvVideoCapture):
             if self._file_name == "screen":
                 result = GetScreen()
             else:
-                result = cv.VideoCapture(os.path.normpath(file_name))
+                result = cv.VideoCapture(os.path.normpath(self._file_name))
         else:
             result = cv.VideoCapture(0)
         if OpenCvVideoCapture.cap:
@@ -171,3 +171,31 @@ class OpenCvCamCaptureByRtsp(AbstractOpenCvVideoCapture):
         os.environ['OPENCV_FFMPEG_CAPTURE_OPTIONS'] = 'rtsp_transport;udp'
         result = cv.VideoCapture(self._url, cv.CAP_FFMPEG)
         return result
+
+
+class OpenCvCanvas:
+    
+    def __init__(self, middleware=None, win_name="Canvas"):
+        self._win_name = win_name
+        self._middleware = middleware
+        self._canvas = None
+        self._init_canvas()
+
+    def _init_canvas(self):
+        self._canvas = np.ones([500, 500, 3], "uint8") * 255
+        return self
+
+    def execute(self):
+        while True:
+            frame = self._canvas
+            if self._middleware:
+                frame = self._middleware.process(frame)
+
+            cv.imshow(self._win_name, frame)
+
+            if cv.waitKey(1) & 0xFF == ord('q'):
+                break
+            elif cv.waitKey(1) & 0xFF == ord('s'):
+                self._middleware.save_image()
+
+        cv.destroyAllWindows()

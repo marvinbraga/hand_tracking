@@ -2,16 +2,12 @@
 """
 Módulo de Middleware Básico.
 """
-import os.path
 from abc import ABCMeta, abstractmethod
-
-import cv2 as cv
-
-from settings import BASE_DIR
 
 
 class BaseMiddleware(metaclass=ABCMeta):
     """ Classe base para middleware. """
+
     def __init__(self, next_middleware=None):
         self._next = next_middleware
 
