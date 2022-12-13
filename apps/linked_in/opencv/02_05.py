@@ -1,5 +1,4 @@
 import cv2 as cv
-import numpy as np
 
 color = cv.imread("../../data/car.jpg", 1)
 
