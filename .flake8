@@ -2,4 +2,4 @@
 max-line-length=120
 exclude="data/*"
 max-complexity = 10
-ignore = "E231"  # Missing whitespace after ',', ';', or ':'
+ignore = E231,E203

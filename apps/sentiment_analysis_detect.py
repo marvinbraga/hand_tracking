@@ -1,7 +1,8 @@
 """
 Módulo de Detecção e Analise de Sentimento.
 https://pytorch.org/get-started/locally/
-pip3 install torch==1.8.1+cu102 torchvision==0.9.1+cu102 torchaudio===0.8.1 -f https://download.pytorch.org/whl/torch_stable.html
+pip3 install torch==1.8.1+cu102 torchvision==0.9.1+cu102 torchaudio===0.8.1
+-f https://download.pytorch.org/whl/torch_stable.html
 """
 import re
 

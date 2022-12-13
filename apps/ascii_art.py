@@ -35,7 +35,7 @@ class ArtConverter(BaseMiddleware):
         self.rendered_ascii_chars = self.set_rendered_chars()
 
     def load_image(self, frame=None):
-        ret, self.cv2_image = None, frame
+        self.cv2_image = frame
         self.image = self.get_image(frame)
 
     def set_rendered_chars(self):
@@ -89,7 +89,7 @@ class ArtConverter(BaseMiddleware):
 
 class ArtConverterColor(ArtConverter):
     ASCII_CHARS_CLEAR = list("Ñ@#W$9876543210?:abc;:+=-,._ ")
-    ASCII_CHARS = ASCII_CHARS_CLEAR[::-1]
+    ASCII_CHARS = str(ASCII_CHARS_CLEAR[::-1])
 
     # ASCII_CHARS = ' ixzao*#MW&8%B@$'
 

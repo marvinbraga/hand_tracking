@@ -1,5 +1,3 @@
-import cv2
-
 from core.abstract_middleware import BaseMiddleware
 from core.video_capture import OpenCvVideoCapture
 
