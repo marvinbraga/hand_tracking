@@ -1,4 +1,3 @@
-# coding=utf-8
 """
 Hand Land Marks Module.
 """
@@ -6,7 +5,8 @@ from enum import Enum
 
 
 class HandLandMarks(Enum):
-    """ Identificação de Land Marks. """
+    """Identificação de Land Marks."""
+
     WHIST = 0
     THUMB_CMC = 1
     THUMB_MCP = 2
@@ -31,5 +31,5 @@ class HandLandMarks(Enum):
 
     @staticmethod
     def all():
-        """ Retorna Lista com todos os atributos. """
+        """Retorna Lista com todos os atributos."""
         return [mark for mark in HandLandMarks]

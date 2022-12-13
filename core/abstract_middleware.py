@@ -1,4 +1,3 @@
-# coding=utf-8
 """
 Módulo de Middleware Básico.
 """
@@ -6,7 +5,7 @@ from abc import ABCMeta, abstractmethod
 
 
 class BaseMiddleware(metaclass=ABCMeta):
-    """ Classe base para middleware. """
+    """Classe base para middleware."""
 
     def __init__(self, next_middleware=None):
         self._next = next_middleware

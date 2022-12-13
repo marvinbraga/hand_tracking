@@ -1,4 +1,3 @@
-# coding=utf-8
 """
 Face Distance of Cam
 """
@@ -17,7 +16,10 @@ class FaceDistanceOfCam(BaseMiddleware):
 
     def __init__(self, next_middleware=None):
         super().__init__(next_middleware=next_middleware)
-        self._detector = FaceMeshDetector(fps=FpsShowInfo(color=(90, 0, 0)), max_num_faces=1)
+        self._detector = FaceMeshDetector(
+            fps=FpsShowInfo(color=(90, 0, 0)),
+            max_num_faces=1,
+        )
 
     def _process(self, frame):
         frame, faces = self._detector.find_face_mesh(frame, draw=False)
@@ -43,9 +45,9 @@ class FaceDistanceOfCam(BaseMiddleware):
 
 
 def main():
-    """ Método de teste. """
+    """Método de teste."""
     OpenCvVideoCapture(middleware=FaceDistanceOfCam()).execute()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

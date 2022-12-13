@@ -1,39 +1,40 @@
-# coding=utf-8
 """
 Project Finger Count
 """
 
-from core.hand_land_marks import HandLandMarks
 from core.abstract_middleware import BaseMiddleware
+from core.hand_land_marks import HandLandMarks
+from core.hand_tracking import HandDetector, HandPointsBold
 from core.utils import FpsShowInfo
 from core.video_capture import OpenCvVideoCapture
-from core.hand_tracking import HandPointsBold, HandDetector
 
 
 class FingerCountMiddleware(BaseMiddleware):
-    """ Verificação da contagem de dedos que não estão recolhidos. """
+    """Verificação da contagem de dedos que não estão recolhidos."""
 
     def __init__(self, next_middleware=None):
         super().__init__(next_middleware=next_middleware)
         # Cria o HandDetector.
         self._detector = HandDetector(
             fps=FpsShowInfo(color=(90, 90, 90)),
-            bold_points=HandPointsBold(bold_points=[
-                HandLandMarks.INDEX_FINGER_MPC,
-                HandLandMarks.THUMB_TIP,
-                HandLandMarks.INDEX_FINGER_PIP,
-                HandLandMarks.INDEX_FINGER_TIP,
-                HandLandMarks.MIDDLE_FINGER_PIP,
-                HandLandMarks.MIDDLE_FINGER_TIP,
-                HandLandMarks.RING_FINGER_PIP,
-                HandLandMarks.RING_FINGER_TIP,
-                HandLandMarks.PINK_PIP,
-                HandLandMarks.PINK_TIP
-            ])
+            bold_points=HandPointsBold(
+                bold_points=[
+                    HandLandMarks.INDEX_FINGER_MPC,
+                    HandLandMarks.THUMB_TIP,
+                    HandLandMarks.INDEX_FINGER_PIP,
+                    HandLandMarks.INDEX_FINGER_TIP,
+                    HandLandMarks.MIDDLE_FINGER_PIP,
+                    HandLandMarks.MIDDLE_FINGER_TIP,
+                    HandLandMarks.RING_FINGER_PIP,
+                    HandLandMarks.RING_FINGER_TIP,
+                    HandLandMarks.PINK_PIP,
+                    HandLandMarks.PINK_TIP,
+                ],
+            ),
         )
 
     def _process(self, frame):
-        """ Executa o processamento da contagem. """
+        """Executa o processamento da contagem."""
         frame = self._detector.find_hands(frame)
         # Se recuperou a posição dos dedos.
         landmarks = self._detector.points
@@ -57,9 +58,9 @@ class FingerCountMiddleware(BaseMiddleware):
 
 
 def main():
-    """ Método de teste. """
+    """Método de teste."""
     OpenCvVideoCapture(middleware=FingerCountMiddleware()).execute()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

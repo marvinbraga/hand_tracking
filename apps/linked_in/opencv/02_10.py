@@ -29,11 +29,11 @@ class SimpleCapture(BaseMiddleware):
         return self
 
     def _update_color(self):
-        if cv2.waitKey(1) & 0xFF == ord('b'):
+        if cv2.waitKey(1) & 0xFF == ord("b"):
             self.color = (255, 0, 0)
-        elif cv2.waitKey(1) & 0xFF == ord('g'):
+        elif cv2.waitKey(1) & 0xFF == ord("g"):
             self.color = (0, 255, 0)
-        elif cv2.waitKey(1) & 0xFF == ord('r'):
+        elif cv2.waitKey(1) & 0xFF == ord("r"):
             self.color = (0, 0, 255)
         return self
 
@@ -44,9 +44,9 @@ class SimpleCapture(BaseMiddleware):
 
 
 def main():
-    """ Método de teste. """
+    """Método de teste."""
     OpenCvCanvas(middleware=SimpleCapture(), win_name="Canvas").execute()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

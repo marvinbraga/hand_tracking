@@ -8,11 +8,11 @@ print(color.shape)
 height, width, channles = color.shape
 
 b, g, r = cv.split(color)
-rgb_split = np.empty([height, width * 3, 3], 'uint8')
+rgb_split = np.empty([height, width * 3, 3], "uint8")
 
 rgb_split[:, 0:width] = cv.merge([b, b, b])
-rgb_split[:, width: width * 2] = cv.merge([g, g, g])
-rgb_split[:, width * 2:width * 3] = cv.merge([r, r, r])
+rgb_split[:, width : width * 2] = cv.merge([g, g, g])
+rgb_split[:, width * 2 : width * 3] = cv.merge([r, r, r])
 
 cv.imshow("Channels", rgb_split)
 cv.moveWindow("Channels", 0, height)

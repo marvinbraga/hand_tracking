@@ -3,8 +3,7 @@ import sys
 
 import cv2
 import numpy as np
-
-from PIL import Image, ImageFont, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 
 
 class TextCv2:
@@ -15,7 +14,11 @@ class TextCv2:
         self.img_draw = ImageDraw.Draw(self.image)
 
     def draw(self, pos, text):
-        self.img_draw.text(pos, text, font=ImageFont.truetype(self.font_name, self.size))
+        self.img_draw.text(
+            pos,
+            text,
+            font=ImageFont.truetype(self.font_name, self.size),
+        )
         return self
 
     @property
@@ -32,8 +35,8 @@ class AsciiVideo:
         self.new_width = new_width
         self.new_height = 0
         self.image = None
-        self.ascii_chars = ''
-        self.ascii_image = ''
+        self.ascii_chars = ""
+        self.ascii_image = ""
         self.space = 5
         self.font_index = 0
 
@@ -49,7 +52,7 @@ class AsciiVideo:
         return self
 
     def clear(self):
-        self.ascii_chars = ''
+        self.ascii_chars = ""
         self.image = None
 
     def grayify(self):
@@ -58,20 +61,30 @@ class AsciiVideo:
 
     def pixel_to_ascii(self):
         ascii_chars = self.ASCII_CHARS_DARK if self.is_dark else self.ASCII_CHARS
-        self.ascii_chars = ''.join([ascii_chars[pxl // 25] for pxl in self.image.getdata()])
+        self.ascii_chars = "".join(
+            [ascii_chars[pxl // 25] for pxl in self.image.getdata()],
+        )
         return self
 
     def prepare(self):
         total_pixels = len(self.ascii_chars)
         self.ascii_image = "\n".join(
-            [self.ascii_chars[index:(index + self.new_width)] for index in range(0, total_pixels, self.new_width)])
+            [
+                self.ascii_chars[index : (index + self.new_width)]
+                for index in range(0, total_pixels, self.new_width)
+            ],
+        )
         self.clear()
         return self
 
     def text_to_cv(self, image):
         img = image
-        for index, line in enumerate(self.ascii_image.split('\n')):
-            img = TextCv2(img, 'c:\\windows\\fonts\\consola.ttf', 8).draw((0, index * self.space), line).text
+        for index, line in enumerate(self.ascii_image.split("\n")):
+            img = (
+                TextCv2(img, "c:\\windows\\fonts\\consola.ttf", 8)
+                .draw((0, index * self.space), line)
+                .text
+            )
         return img
 
 
@@ -84,7 +97,8 @@ def main(use_cv=False):
             ret, frame = cap.read()
             cv2.imshow("frame", frame)
             ascii_video.set_image(
-                Image.fromarray(frame)).resize_image().grayify().pixel_to_ascii().prepare()
+                Image.fromarray(frame),
+            ).resize_image().grayify().pixel_to_ascii().prepare()
 
             if use_cv:
                 size = Image.fromarray(frame).size[::-1]
@@ -92,14 +106,14 @@ def main(use_cv=False):
                 cv2.imshow("chars", ascii_video.text_to_cv(background))
             else:
                 sys.stdout.write(ascii_video.ascii_image)
-                os.system('cls' if os.name == 'nt' else 'clear')
+                os.system("cls" if os.name == "nt" else "clear")
 
-            if cv2.waitKey(1) & 0xFF == ord('q'):
+            if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
     finally:
         cap.release()
         cv2.destroyAllWindows()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main(use_cv=True)

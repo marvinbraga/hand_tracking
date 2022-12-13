@@ -1,6 +1,6 @@
 import cv2
 
-img = cv2.imread('../../data/car.jpg')
+img = cv2.imread("../../data/car.jpg")
 cv2.imshow("Original", img)
 
 # scale

@@ -2,7 +2,7 @@ from pathlib import Path
 
 from invoke import task
 
-from apps.open.test_open_ai import TextCreate, ImageCreate
+from apps.open.test_open_ai import ImageCreate, TextCreate
 
 PROJECT_ROOT = Path(__file__).parent.absolute()
 

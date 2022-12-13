@@ -30,9 +30,9 @@ class SimpleCapture(BaseMiddleware):
 
 
 def main():
-    """ Método de teste. """
+    """Método de teste."""
     OpenCvVideoCapture(middleware=SimpleCapture(), win_name="Frame").execute()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

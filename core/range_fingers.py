@@ -1,4 +1,3 @@
-# coding=utf-8
 """
 Range Fingers Module.
 """
@@ -9,10 +8,18 @@ import numpy
 
 
 class RangeFingers:
-    """ Classe para controlar a diferença entre dois dedos. """
+    """Classe para controlar a diferença entre dois dedos."""
+
     box_width, box_height = 150, 400
 
-    def __init__(self, detector, min_length, max_length, value_range, color=(255, 0, 255)):
+    def __init__(
+        self,
+        detector,
+        min_length,
+        max_length,
+        value_range,
+        color=(255, 0, 255),
+    ):
         self._value_range = value_range
         self._min_value, self._max_value = value_range[0], value_range[1]
         self._color = color
@@ -76,11 +83,21 @@ class RangeFingers:
             # Recuperando o tamanho da linha
             self._create_line(img, x1, y1, x2, y2, draw)
             # Ajusta o volume de acordo com os valores registrados.
-            self._value = numpy.interp(self._length, [self._min_length, self._max_length],
-                                       [self._min_value, self._max_value])
-            self._box_value = numpy.interp(self._length, [self._min_length, self._max_length],
-                                           [self.box_height, self.box_width])
-            self._box_tax = numpy.interp(self._length, [self._min_length, self._max_length], [0, 100])
+            self._value = numpy.interp(
+                self._length,
+                [self._min_length, self._max_length],
+                [self._min_value, self._max_value],
+            )
+            self._box_value = numpy.interp(
+                self._length,
+                [self._min_length, self._max_length],
+                [self.box_height, self.box_width],
+            )
+            self._box_tax = numpy.interp(
+                self._length,
+                [self._min_length, self._max_length],
+                [0, 100],
+            )
 
         return self
 
@@ -91,5 +108,13 @@ class RangeFingers:
         """
         cv.rectangle(img, (50, 150), (85, 400), color, 3)
         cv.rectangle(img, (50, int(self._box_value)), (85, 400), color, cv.FILLED)
-        cv.putText(img, f'{int(self._box_tax)}%', (50, 425), cv.FONT_HERSHEY_COMPLEX, 0.75, color, 3)
+        cv.putText(
+            img,
+            f"{int(self._box_tax)}%",
+            (50, 425),
+            cv.FONT_HERSHEY_COMPLEX,
+            0.75,
+            color,
+            3,
+        )
         return img
