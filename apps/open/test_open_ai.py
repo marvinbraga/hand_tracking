@@ -1,6 +1,7 @@
 import base64
 import json
 import time
+from datetime import datetime
 
 import openai
 from decouple import config
@@ -23,7 +24,7 @@ class TextCreate:
             engine=self.engine,
             prompt=self._prompt,
             temperature=0.7,
-            max_tokens=256 * 3,
+            max_tokens=256 * 6,
             top_p=1,
             frequency_penalty=0,
             presence_penalty=0,
@@ -42,10 +43,16 @@ class ImageCreate:
         self._prompt = prompt
         self._file_name = None
 
+    @staticmethod
+    def _get_name():
+        # prompt.replace(" ", "_")
+        filename = datetime.now().strftime("%Y%m%d_%H%M%S%f")
+        return filename
+
     def _save_image(self, response):
         image_64_encode = json.loads(str(response))["data"][0]["b64_json"]
         image_64_decode = base64.b64decode(image_64_encode)
-        self._file_name = self._path + self._prompt.replace(" ", "_") + ".png"
+        self._file_name = self._path + self._get_name() + ".png"
         with open(self._file_name, "wb") as image_result:
             image_result.write(image_64_decode)
         return self

@@ -22,6 +22,7 @@ pycaw = "^20220416"
 transformers = "^4.25.1"
 pre-commit = "^2.20.0"
 flake8 = "^6.0.0"
+pyautogui = "^0.9.53"
 
 [tool.poetry.dev-dependencies]
 
