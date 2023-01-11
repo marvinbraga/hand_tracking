@@ -34,5 +34,5 @@ def var(c, text, base, size="1024x1024"):
 
 
 @task
-def code(c, text):
-    print(CodeCreate(prompt=text).execute().result)
+def code(c, text, language="python/3.11"):
+    print(CodeCreate(prompt=text, language=language).execute().result)
