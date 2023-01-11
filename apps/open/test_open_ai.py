@@ -1,10 +1,11 @@
 import openai
 
+from apps.open.base.codes import CodeCreate
 from apps.open.base.images import ImageCreate, ImageVariation
 from apps.open.base.texts import TextCreate
 
 engines = openai.Engine.list()
-print("\n".join(sorted(engine.id for engine in engines.data)))
+print("\n".join(sorted(engine.id for engine in engines.data)), "\n")
 
 print(
     TextCreate(
@@ -41,4 +42,12 @@ print(
     .execute()
     .file_name,
     "\n",
+)
+
+print(
+    CodeCreate(
+        prompt="Imprima 'Olá, Mundo!' na tela.",
+    )
+    .execute()
+    .result,
 )
